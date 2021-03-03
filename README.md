@@ -14,8 +14,9 @@
  ### 웹서버
   * IDE : IntelliJ
   * 언어 : Scala
+  * Framework : Scalatra
  ### Database(MySQL)
-  * Version
+  * Version : 
   
 ### 실행 환경
 안드로이드
