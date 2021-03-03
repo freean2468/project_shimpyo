@@ -7,15 +7,15 @@
 * 멤버 : 김택민, 송훈일, 허선영
 * 개발 기간 : 2021.03.04 ~
 
-### 개발 환경
- * 클라이언트
-  ** IDE : Android Studio v.4.1.2
-  ** 언어 : Java
- * 웹서버
-  ** IDE : IntelliJ
-  ** 언어 : Scala
- * Database(MySQL)
-  ** Version
+## 개발 환경
+ ### 클라이언트
+  * IDE : Android Studio v.4.1.2
+  * 언어 : Java
+ ### 웹서버
+  * IDE : IntelliJ
+  * 언어 : Scala
+ ### Database(MySQL)
+  * Version
   
 ### 실행 환경
 안드로이드
