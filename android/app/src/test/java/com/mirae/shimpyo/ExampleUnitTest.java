@@ -1,4 +1,4 @@
-package com.example.projectshimpyo;
+package com.mirae.shimpyo;
 
 import org.junit.Test;
 
