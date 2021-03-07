@@ -17,8 +17,13 @@ lazy val hello = (project in file("."))
       // Database packages
       "mysql" % "mysql-connector-java" % "8.0.11",
       "com.typesafe.slick" %% "slick" % "3.3.2",
-      "com.mchange" % "c3p0" % "0.9.5.5",
+      // no pooling with mysql
+      //"com.mchange" % "c3p0" % "0.9.5.5",
       //"com.typesafe.slick" %% "slick-hikaricp" % "3.3.2"
+
+      // for Json formatting packages
+      "org.scalatra" %% "scalatra-json" % "2.7.0",
+      "org.json4s" %% "json4s-jackson" % "3.6.11"
 
     ),
   )

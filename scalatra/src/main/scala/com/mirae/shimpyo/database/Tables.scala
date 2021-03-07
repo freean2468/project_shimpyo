@@ -1,10 +1,13 @@
 package com.mirae.shimpyo.database
 
 import com.mirae.shimpyo.database.Tables.{Account, AccountRepository}
+import org.json4s.jackson.Serialization.formats
 import org.scalatra.{FutureSupport, ScalatraBase, ScalatraServlet}
 import slick.dbio.DBIOAction
 import slick.jdbc.JdbcBackend.Database
 import slick.jdbc.MySQLProfile.api._
+import org.json4s.{DefaultFormats, Formats}
+import org.scalatra.json._
 
 object Tables {
   case class Account(no: String, pw: String)
@@ -41,13 +44,15 @@ object Tables {
   }
 }
 
-trait SlickRoutes extends ScalatraBase with FutureSupport{
+trait SlickRoutes extends ScalatraBase with JacksonJsonSupport with FutureSupport{
+  // Sets up automatic case class to JSON output serialization, required by the JValueResult trait.
+  protected implicit lazy val jsonFormats: Formats = DefaultFormats
+
   def db: Database
   val accounts = new AccountRepository(db)
 
   get("/db/init") {
     db.run(accounts.accounts.result) map { xs =>
-      contentType = "text/plain"
       xs map { case Account(s1, s2) => f"$s1, $s2" } mkString "\n"
     }
   }
@@ -58,19 +63,20 @@ trait SlickRoutes extends ScalatraBase with FutureSupport{
 
   get("/db/find") {
     accounts.find("1") map { s1 =>
-      contentType = "text/plain"
       f"no : $s1, pw : " mkString "\n"
     }
   }
 
   get("/db/selectAll") {
-    accounts.init map { xs =>
-      contentType = "text/plain"
-      xs map { case (s1, s2) => f"$s1, $s2" } mkString "\n"
-    }
+    contentType = formats("json")
+    accounts.init
+  }
+
+  get("/db/accounts") {
+    accounts.accounts
   }
 }
 
-class SlickApp (val db: Database) extends ScalatraServlet with FutureSupport with SlickRoutes {
+class SlickApp (val db: Database) extends ScalatraServlet with SlickRoutes {
   protected implicit def executor = scala.concurrent.ExecutionContext.Implicits.global
 }
