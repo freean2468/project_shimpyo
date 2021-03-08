@@ -29,18 +29,42 @@ object Tables {
 
     def presentAccountTable() = db.run(accounts.result)
 
-    def init() = db.run(sql"select * from account_table".as[(String, String)])
-
+    // Create
     // def drop() = db.run(DBIOAction.seq(accounts.schema.drop))
     def insert(account: Account) = db.run(accounts += account)
+
+    def insert() = {
+      val insertAction = DBIO.seq(
+        accounts += Account("testId", "testPw"),
+        accounts ++= Seq(
+          Account("test1id", "test1pw"),
+          Account("test2id", "test2pw"),
+          Account("test3id", "test3pw")
+        )
+      )
+      db.run(insertAction)
+    }
+
+    // Read
+    def selectAll() = db.run(sql"select * from account_table".as[(String, String)])
+
+    // Update
+    def update(no: String, pwTo: String) = {
+      val updateAction = (for { a <- accounts if a.no === no } yield a.pw).update(pwTo)
+      db.run(updateAction)
+    }
+
+
+    // Delete
+    def delete(): Unit = {
+      val deleteAction = (accounts filter { _.no like "%test%" }).delete
+      db.run(deleteAction)
+    }
 
     // def find(no: String) = db.run((for (account <- accounts if account.no === no) yield account).result.headOption) // imperative way
     def find(no: String) = db.run(accounts.filter(_.no === no).result.headOption)
 
-    val setup = DBIO.seq(
-      accounts += Account("test1", "123")
-    )
-    val setupFuture = db.run(setup)
+
   }
 }
 
@@ -57,8 +81,18 @@ trait SlickRoutes extends ScalatraBase with JacksonJsonSupport with FutureSuppor
     }
   }
 
-  get("/db/setup") {
-    accounts.setupFuture
+  get("/db/insert") {
+    accounts.insert
+  }
+
+  get("/db/update/:pw") {
+    val no = params("no")
+    val pwTo = params("pwTo")
+    accounts.update(no, pwTo)
+  }
+
+  get("/db/delete") {
+    accounts.delete
   }
 
   get("/db/find") {
@@ -69,7 +103,7 @@ trait SlickRoutes extends ScalatraBase with JacksonJsonSupport with FutureSuppor
 
   get("/db/selectAll") {
     contentType = formats("json")
-    accounts.init
+    accounts.selectAll()
   }
 
   get("/db/accounts") {

@@ -23,13 +23,13 @@ public class ActivityMain extends AppCompatActivity {
         TextView textView = findViewById(R.id.textView);
 
         // bridged IP
-        String url = "http://10.0.2.2:8080/db/selectAll";
+        String url = "http://shimpyo-env.eba-gxbgkhwf.ap-northeast-2.elasticbeanstalk.com/db/selectAll";
         VolleyInterface volleyInterface = VolleyInterface.getInstance(getApplicationContext());
 
         JsonArrayRequest request = new JsonArrayRequest(
                 url,
                 response -> textView.setText("Response: " + response),
-                error -> textView.setText("Response error "));
+                error -> textView.setText("Response error " + error));
 
         volleyInterface.addToRequestQueue(request);
     }

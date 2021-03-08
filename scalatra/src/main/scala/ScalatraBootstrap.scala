@@ -9,7 +9,16 @@ class ScalatraBootstrap extends LifeCycle{
   val logger = LoggerFactory.getLogger(getClass)
 
   override def init(context: ServletContext) {
-    val db = Database.forConfig("mydb")
+    val db = System.getenv("RDS_HOSTNAME") match {
+      case null => Database.forConfig("mydb")
+      case _ => {
+        Database.forURL(
+          s"jdbc:mysql://shimpyoawsmysql.ca9ax6wszxzo.ap-northeast-2.rds.amazonaws.com:3306/shimpyo?serverTimezone=UTC&useSSL=false",
+          "root",
+          "12345678"
+        )
+      }
+    }
 
     context.mount(new SlickApp(db), "/*")
 //    context.mount(new ServletMain, "/*")
