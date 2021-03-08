@@ -1,15 +1,17 @@
 package com.mirae.shimpyo.database
 
+import org.scalatra.{AsyncResult, Ok}
 import org.slf4j.LoggerFactory
 import slick.jdbc.JdbcBackend.Database
 import slick.jdbc.MySQLProfile.api._
 
 import java.util.Calendar
+import scala.util.{Failure, Success}
 
 object Tables {
-  case class Account(no: String, pw: String)
+  case class Account(no: String, pw: Option[String])
   case class Question(dayOfYear: Int, question: String)
-  case class Diary(no: String, dayOfYear: Int, answer: String, photo: Array[Byte])
+  case class Diary(no: String, dayOfYear: Int, answer: Option[String], photo: Option[Array[Byte]])
 
   class Accounts(tag: Tag) extends Table[Account](tag, "account_table") {
     // Columns
@@ -17,7 +19,7 @@ object Tables {
     def pw = column[String]("pw")
 
     // Every table needs a * projection with the same type as the table's type parameter
-    def * = (no, pw) <> (Account.tupled, Account.unapply)
+    def * = (no, pw.?) <> (Account.tupled, Account.unapply)
   }
   val accounts = TableQuery[Accounts]
 
@@ -49,12 +51,14 @@ object Tables {
         onDelete=ForeignKeyAction.Restrict)
 
     def * =
-      (no, dayOfYear, answer, photo) <> (Diary.tupled, Diary.unapply)
+      (no, dayOfYear, answer.?, photo.?) <> (Diary.tupled, Diary.unapply)
   }
   val diaries = TableQuery[Diaries]
 
   class Repository(db: Database) {
     import scala.concurrent.ExecutionContext.Implicits.global
+
+
 
     // Create
     // def drop() = db.run(DBIOAction.seq(accounts.schema.drop))
@@ -63,11 +67,10 @@ object Tables {
 
     def insert() = {
       val insertAction = DBIO.seq(
-        accounts += Account("testId", "testPw"),
+        accounts += Account("testId", Some("testPw")),
         accounts ++= Seq(
-          Account("test1id", "test1pw"),
-          Account("test2id", "test2pw"),
-          Account("test3id", "test3pw")
+          Account("test1id", Some("test1pw")),
+          Account("test2id", Some("test2pw"))
         )
       )
       db.run(insertAction)
@@ -78,18 +81,37 @@ object Tables {
       db.run(sql"select * from account_table".as[(String, String)])
 
     def login(no:String) = {
-      val count = findAccount(no)
       val logger = LoggerFactory.getLogger(getClass)
-
-      logger.debug("count : " + count)
-
-
-      if (count == 0) {
-        insert(Account(no, null))
-        insert(Diary(no, Calendar.getInstance.get(Calendar.DAY_OF_YEAR), "", null))
+      findAccount(no) onComplete {
+        case Success(count) => {
+          count match {
+            case None => {
+              logger.info("count None")
+              insert(Account(no, null))
+              insert(Diary(no, Calendar.getInstance.get(Calendar.DAY_OF_YEAR), Some(""), null)) onComplete {
+                case Success(count) => {
+                  findDiary(no) onComplete {
+                    case Success(r) => r
+                    case Failure(e) => e.printStackTrace()
+                  }
+                }
+                case Failure(e) => e.printStackTrace()
+              }
+            }
+            case _ => {
+              logger.info("count Some, no : " + no)
+              findDiary(no) onComplete {
+                case Success(r) => {
+                  logger.info("success" + r.toString)
+                  r
+                }
+                case Failure(e) => e.printStackTrace()
+              }
+            }
+          }
+        }
+        case Failure(e) => e.printStackTrace()
       }
-
-      findDiary(no)
     }
 
     // Update

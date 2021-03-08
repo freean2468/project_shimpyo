@@ -11,7 +11,7 @@ lazy val hello = (project in file("."))
       "org.scalatra" %% "scalatra" % ScalatraVersion,
       "org.scalatra" %% "scalatra-scalatest" % ScalatraVersion % "test",
       "ch.qos.logback" % "logback-classic" % "1.2.3" % "runtime",
-      "org.eclipse.jetty" % "jetty-webapp" % "9.4.35.v20201120" % "compile;container",
+      "org.eclipse.jetty" % "jetty-webapp" % "9.4.35.v20201120" % "provided;container",
       "javax.servlet" % "javax.servlet-api" % "3.1.0" % "provided",
 
       // Database packages
@@ -23,7 +23,11 @@ lazy val hello = (project in file("."))
 
       // for Json formatting packages
       "org.scalatra" %% "scalatra-json" % "2.7.0",
-      "org.json4s" %% "json4s-jackson" % "3.6.11"
+      "org.json4s" %% "json4s-jackson" % "3.6.11",
+
+      // for concurrency
+      "com.typesafe.akka" %% "akka-actor" % "2.6.13"
+//      "net.databinder.dispatch" % "dispatch-core_2.12" % "0.13.4",
 
     ),
   )

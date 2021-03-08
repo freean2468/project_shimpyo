@@ -1,19 +1,29 @@
 package com.mirae.shimpyo
 
+import akka.actor.{ActorRef, ActorSystem}
+import akka.util.Timeout
 import com.mirae.shimpyo.database.Tables
 import com.mirae.shimpyo.database.Tables.{Account, Repository}
 import org.json4s.{DefaultFormats, Formats}
 import org.scalatra.json.JacksonJsonSupport
-import org.scalatra.{FutureSupport, ScalatraBase, ScalatraServlet}
+import org.scalatra.{AsyncResult, FutureSupport, Ok, ScalatraBase, ScalatraServlet}
 import slick.jdbc.JdbcBackend.Database
 import slick.jdbc.MySQLProfile.api._
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.duration._
+import _root_.akka.dispatch._
+
+import javax.servlet.ServletContext
 
 trait Route extends ScalatraBase with JacksonJsonSupport with FutureSupport{
   // Sets up automatic case class to JSON output serialization, required by the JValueResult trait.
   protected implicit lazy val jsonFormats: Formats = DefaultFormats
 
+  implicit val timeout = new Timeout(2.seconds)
+
+  def serviceActor : ActorRef
+  def system: ActorSystem
   def db: Database
   val repository = new Repository(db)
 
@@ -59,11 +69,16 @@ trait Route extends ScalatraBase with JacksonJsonSupport with FutureSupport{
     /service/ routing
    */
   get("/service/login/:id") {
-    contentType = formats("json")
-    repository.login(params("no"))
+    new AsyncResult { override val is =
+      Future {
+        contentType = formats("json")
+        repository.login(params("no"))
+      }
+    }
   }
 }
 
-class RouteApp (val db: Database) extends ScalatraServlet with Route {
+class RouteApp (val db: Database, val system:ActorSystem, val serviceActor:ActorRef) extends ScalatraServlet with Route {
   protected implicit def executor: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
+//  protected implicit def executor: ExecutionContext = system.dispatcher
 }
