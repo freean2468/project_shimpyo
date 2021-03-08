@@ -74,4 +74,4 @@ project/metals.sbt
 /.lib/
 
 # db conf
-/src/main/resources/application.conf
+src/main/resources/application.conf
