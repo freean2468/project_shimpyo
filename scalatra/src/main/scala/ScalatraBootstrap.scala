@@ -1,4 +1,4 @@
-import com.mirae.shimpyo.database.SlickApp
+import com.mirae.shimpyo.RouteApp
 import org.scalatra._
 import org.slf4j.LoggerFactory
 import slick.jdbc.JdbcBackend.Database
@@ -20,7 +20,7 @@ class ScalatraBootstrap extends LifeCycle{
       }
     }
 
-    context.mount(new SlickApp(db), "/*")
+    context.mount(new RouteApp(db), "/*")
 //    context.mount(new ServletMain, "/*")
 //    context.mount(new Articles, "/articles/*")
   }
