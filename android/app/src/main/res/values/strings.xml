@@ -4,4 +4,5 @@
     <string name="host_name_for_development">http://10.0.2.2:8080/</string>
     <string name="url_login">service/login/1?</string>
     <string name="url_selectAll">db/selectAll</string>
+    <string name="kakao_app_key">7296adf98bdaa2d1a1f8e38c38b448db</string>
 </resources>
