@@ -6,7 +6,8 @@ import slick.jdbc.JdbcBackend.Database
 import slick.jdbc.MySQLProfile.api._
 
 import java.util.Calendar
-import scala.util.{Failure, Success}
+import scala.concurrent.Promise
+import scala.util.{Failure, Success, Try}
 
 object Tables {
   case class Account(no: String, pw: Option[String])
@@ -58,8 +59,6 @@ object Tables {
   class Repository(db: Database) {
     import scala.concurrent.ExecutionContext.Implicits.global
 
-
-
     // Create
     // def drop() = db.run(DBIOAction.seq(accounts.schema.drop))
     def insert(account: Account) = db.run(accounts += account)
@@ -82,6 +81,7 @@ object Tables {
 
     def login(no:String) = {
       val logger = LoggerFactory.getLogger(getClass)
+      val prom = Promise[Diary]()
       findAccount(no) onComplete {
         case Success(count) => {
           count match {
@@ -91,7 +91,7 @@ object Tables {
               insert(Diary(no, Calendar.getInstance.get(Calendar.DAY_OF_YEAR), Some(""), null)) onComplete {
                 case Success(count) => {
                   findDiary(no) onComplete {
-                    case Success(r) => r
+                    case Success(r) => prom.complete(Try(r.get))
                     case Failure(e) => e.printStackTrace()
                   }
                 }
@@ -102,8 +102,8 @@ object Tables {
               logger.info("count Some, no : " + no)
               findDiary(no) onComplete {
                 case Success(r) => {
-                  logger.info("success" + r.toString)
-                  r
+                  logger.info("success : " + r.get)
+                  prom.complete(Try(r.get))
                 }
                 case Failure(e) => e.printStackTrace()
               }
@@ -112,6 +112,7 @@ object Tables {
         }
         case Failure(e) => e.printStackTrace()
       }
+      prom.future
     }
 
     // Update

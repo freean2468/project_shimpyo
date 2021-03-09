@@ -24,5 +24,15 @@
         android:layout_height="wrap_content"
         android:text="Login"/>
 
+    <Switch
+        android:id="@+id/switchUseCase"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:checked="true"/>
+
+    <TextView
+        android:id="@+id/textViewUseCase"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>
