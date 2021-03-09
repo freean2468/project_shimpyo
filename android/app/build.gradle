@@ -39,4 +39,7 @@ dependencies {
 
     // Volley for networking to webserver
     implementation 'com.android.volley:volley:1.1.1'
+    
+    implementation "com.kakao.sdk:v2-user:2.2.0" // 카카오 로그인
+    implementation "com.kakao.sdk:v2-talk:2.2.0" // 친구, 메시지(카카오톡)
 }
