@@ -3,6 +3,9 @@ package com.mirae.shimpyo;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -15,22 +18,41 @@ import org.json.JSONObject;
 
 public class ActivityMain extends AppCompatActivity {
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         TextView textView = findViewById(R.id.textView);
+        Button buttonLogin = findViewById(R.id.buttonLogin);
+        EditText editText = findViewById(R.id.editText);
+        Switch switchUseCase = findViewById(R.id.switchUseCase);
+        TextView textViewUseCase = findViewById(R.id.textViewUseCase);
 
-        // bridged IP
-        String url = "http://10.0.2.2:8080/db/selectAll";
-        VolleyInterface volleyInterface = VolleyInterface.getInstance(getApplicationContext());
+        VolleyInterface volleyInterface = VolleyInterface.getInstance(this);
+        textViewUseCase.setText(volleyInterface.getHostName());
 
-        JsonArrayRequest request = new JsonArrayRequest(
-                url,
-                response -> textView.setText("Response: " + response),
-                error -> textView.setText("Response error "));
+        volleyInterface.requestAccountsAll(
+            response -> textView.setText("Response: " + response),
+            error -> textView.setText("Response error " + error)
+        );
 
-        volleyInterface.addToRequestQueue(request);
+        buttonLogin.setOnClickListener((v) -> {
+            volleyInterface.requestKakaoLogin(
+                editText.getText().toString(),
+                new VolleyInterface.RequestLoginListener() {
+                    @Override public void jobToDo() {
+                        textView.setText("no : " + this.no + ", dayOfYear : " + this.dayOfYear + ", answer : " + this.answer);
+                    }
+                },
+                error -> { textView.setText("error : " + error.toString()); }
+            );
+        });
+
+        switchUseCase.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            volleyInterface.toggleUseCase();
+            textViewUseCase.setText(volleyInterface.getHostName());
+        });
     }
 }

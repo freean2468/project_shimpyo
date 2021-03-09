@@ -1,82 +1,151 @@
 package com.mirae.shimpyo.database
 
-import com.mirae.shimpyo.database.Tables.{Account, AccountRepository}
-import org.json4s.jackson.Serialization.formats
-import org.scalatra.{FutureSupport, ScalatraBase, ScalatraServlet}
-import slick.dbio.DBIOAction
+import com.mirae.shimpyo.Util
+import org.scalatra.{AsyncResult, Ok}
+import org.slf4j.LoggerFactory
 import slick.jdbc.JdbcBackend.Database
 import slick.jdbc.MySQLProfile.api._
-import org.json4s.{DefaultFormats, Formats}
-import org.scalatra.json._
+
+import java.util.Calendar
+import scala.concurrent.Promise
+import scala.util.{Failure, Success, Try}
 
 object Tables {
-  case class Account(no: String, pw: String)
+  case class Account(no: String, pw: Option[String])
+  case class Question(dayOfYear: Int, question: String)
+  case class Diary(no: String, dayOfYear: Int, answer: Option[String], photo: Option[Array[Byte]])
 
-  trait AccountTable {
-    class Accounts(tag: Tag) extends Table[Account](tag, "account_table") {
-      // Columns
-      def no = column[String]("no", O.PrimaryKey)
-      def pw = column[String]("pw")
+  class Accounts(tag: Tag) extends Table[Account](tag, "account_table") {
+    // Columns
+    def no = column[String]("no", O.PrimaryKey)
+    def pw = column[String]("pw")
 
-      // Every table needs a * projection with the same type as the table's type parameter
-      def * = (no, pw) <> (Account.tupled, Account.unapply)
-    }
-    val accounts = TableQuery[Accounts]
+    // Every table needs a * projection with the same type as the table's type parameter
+    def * = (no, pw.?) <> (Account.tupled, Account.unapply)
   }
+  val accounts = TableQuery[Accounts]
 
-  class AccountRepository(db: Database) extends AccountTable {
+  class Questions(tag: Tag) extends Table[Question](tag, "question_table") {
+    // Columns
+    def dayOfYear = column[Int]("dayOfYear", O.PrimaryKey)
+    def question = column[String]("question")
+
+    // Every table needs a * projection with the same type as the table's type parameter
+    def * =
+      (dayOfYear, question) <> (Question.tupled, Question.unapply)
+  }
+  val questions = TableQuery[Questions]
+
+  class Diaries(tag: Tag) extends Table[Diary](tag, "diary_table") {
+    def no = column[String]("no")
+    def dayOfYear = column[Int]("dayOfYear")
+    def answer = column[String]("answer")
+    def photo = column[Array[Byte]]("photo")
+
+    def account =
+      foreignKey("fk_no", no, accounts)(_.no,
+        onUpdate = ForeignKeyAction.Cascade,
+        onDelete=ForeignKeyAction.Cascade)
+
+    def question =
+      foreignKey("fk_dayOfYear", dayOfYear, questions)(_.dayOfYear,
+        onUpdate = ForeignKeyAction.Cascade,
+        onDelete=ForeignKeyAction.Restrict)
+
+    def * =
+      (no, dayOfYear, answer.?, photo.?) <> (Diary.tupled, Diary.unapply)
+  }
+  val diaries = TableQuery[Diaries]
+
+  class Repository(db: Database) {
     import scala.concurrent.ExecutionContext.Implicits.global
 
-    def presentAccountTable() = db.run(accounts.result)
-
-    def init() = db.run(sql"select * from account_table".as[(String, String)])
-
+    // Create
     // def drop() = db.run(DBIOAction.seq(accounts.schema.drop))
     def insert(account: Account) = db.run(accounts += account)
+    def insert(diary: Diary) = db.run(diaries += diary)
+
+    def insert() = {
+      val insertAction = DBIO.seq(
+        accounts += Account("testId", Some("testPw")),
+        accounts ++= Seq(
+          Account("test1id", Some("test1pw")),
+          Account("test2id", Some("test2pw"))
+        )
+      )
+      db.run(insertAction)
+    }
+
+    // Read
+    def selectAll() =
+      db.run(sql"select * from account_table".as[(String, String)])
+
+    def login(no:String) = {
+      val logger = LoggerFactory.getLogger(getClass)
+      val prom = Promise[Diary]()
+      findAccount(no) onComplete {
+        case Success(count) => {
+          count match {
+            case None => {
+//              logger.info("count None")
+              insert(Account(no, null))
+              insert(Diary(no, Calendar.getInstance.get(Calendar.DAY_OF_YEAR), Some(""), null)) onComplete {
+                case Success(count) => {
+                  findDiary(no) onComplete {
+                    case Success(r) => prom.complete(Try(r.get))
+                    case Failure(e) => e.printStackTrace()
+                  }
+                }
+                case Failure(e) => e.printStackTrace()
+              }
+            }
+            case _ => {
+//              logger.info("count Some, no : " + no)
+              findDiary(no) onComplete {
+                case Success(r) => {
+                  logger.info(r.get.toString)
+                  prom.complete(Try(r.get))
+                }
+                case Failure(e) => e.printStackTrace()
+              }
+            }
+          }
+        }
+        case Failure(e) => e.printStackTrace()
+      }
+      prom.future
+    }
+
+    def calendar(no:String, month: Int) = {
+      val days = Util.getDaysWithMonth(month)
+      val logger = LoggerFactory.getLogger(getClass)
+//      logger.info("days.head : " + days.head + " days.last : " + days.last)
+      val prom = Promise[Seq[Diary]]()
+      findDiaries(no, days.head, days.last) onComplete {
+        case Success(v) => prom.complete(Try(v))
+        case Failure(e) => e.printStackTrace()
+      }
+      prom.future
+    }
+
+    // Update
+    def update(no: String, pwTo: String) = {
+      val updateAction = (for { a <- accounts if a.no === no } yield a.pw).update(pwTo)
+      db.run(updateAction)
+    }
+
+    // Delete
+    def delete(): Unit = {
+      val deleteAction = (accounts filter { _.no like "%test%" }).delete
+      db.run(deleteAction)
+    }
 
     // def find(no: String) = db.run((for (account <- accounts if account.no === no) yield account).result.headOption) // imperative way
-    def find(no: String) = db.run(accounts.filter(_.no === no).result.headOption)
+    def findAccount(no: String) = db.run(accounts.filter(_.no === no).result.headOption)
+    def findDiary(no: String) = db.run(diaries.filter(_.no === no).result.headOption)
+    def findDiaries(no: String, firstDay: Int, lastDay: Int) =
+      db.run(diaries.filter(d =>
+        d.no === no && (d.dayOfYear >= firstDay && d.dayOfYear <= lastDay)).result)
 
-    val setup = DBIO.seq(
-      accounts += Account("test1", "123")
-    )
-    val setupFuture = db.run(setup)
   }
-}
-
-trait SlickRoutes extends ScalatraBase with JacksonJsonSupport with FutureSupport{
-  // Sets up automatic case class to JSON output serialization, required by the JValueResult trait.
-  protected implicit lazy val jsonFormats: Formats = DefaultFormats
-
-  def db: Database
-  val accounts = new AccountRepository(db)
-
-  get("/db/init") {
-    db.run(accounts.accounts.result) map { xs =>
-      xs map { case Account(s1, s2) => f"$s1, $s2" } mkString "\n"
-    }
-  }
-
-  get("/db/setup") {
-    accounts.setupFuture
-  }
-
-  get("/db/find") {
-    accounts.find("1") map { s1 =>
-      f"no : $s1, pw : " mkString "\n"
-    }
-  }
-
-  get("/db/selectAll") {
-    contentType = formats("json")
-    accounts.init
-  }
-
-  get("/db/accounts") {
-    accounts.accounts
-  }
-}
-
-class SlickApp (val db: Database) extends ScalatraServlet with SlickRoutes {
-  protected implicit def executor = scala.concurrent.ExecutionContext.Implicits.global
 }
