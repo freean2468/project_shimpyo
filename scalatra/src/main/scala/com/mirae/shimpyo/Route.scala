@@ -22,8 +22,6 @@ trait Route extends ScalatraBase with JacksonJsonSupport with FutureSupport{
 
   implicit val timeout = new Timeout(2.seconds)
 
-  def serviceActor : ActorRef
-  def system: ActorSystem
   def db: Database
   val repository = new Repository(db)
 
@@ -76,9 +74,24 @@ trait Route extends ScalatraBase with JacksonJsonSupport with FutureSupport{
       }
     }
   }
+
+  get("/service/calendar/:id") {
+    new AsyncResult { override val is =
+      Future {
+        contentType = formats("json")
+        repository.calendar(params("no"), params("m").toInt)
+      }
+    }
+  }
+
+  error {
+    case e: NoSuchElementException => e.printStackTrace()
+    case e: NumberFormatException => e.printStackTrace()
+    case e: Exception => e.printStackTrace()
+  }
 }
 
-class RouteApp (val db: Database, val system:ActorSystem, val serviceActor:ActorRef) extends ScalatraServlet with Route {
+class RouteApp (val db: Database) extends ScalatraServlet with Route {
   protected implicit def executor: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
 //  protected implicit def executor: ExecutionContext = system.dispatcher
 }

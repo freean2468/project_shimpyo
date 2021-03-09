@@ -1,5 +1,6 @@
 package com.mirae.shimpyo.database
 
+import com.mirae.shimpyo.Util
 import org.scalatra.{AsyncResult, Ok}
 import org.slf4j.LoggerFactory
 import slick.jdbc.JdbcBackend.Database
@@ -86,7 +87,7 @@ object Tables {
         case Success(count) => {
           count match {
             case None => {
-              logger.info("count None")
+//              logger.info("count None")
               insert(Account(no, null))
               insert(Diary(no, Calendar.getInstance.get(Calendar.DAY_OF_YEAR), Some(""), null)) onComplete {
                 case Success(count) => {
@@ -99,10 +100,10 @@ object Tables {
               }
             }
             case _ => {
-              logger.info("count Some, no : " + no)
+//              logger.info("count Some, no : " + no)
               findDiary(no) onComplete {
                 case Success(r) => {
-                  logger.info("success : " + r.get)
+                  logger.info(r.get.toString)
                   prom.complete(Try(r.get))
                 }
                 case Failure(e) => e.printStackTrace()
@@ -110,6 +111,18 @@ object Tables {
             }
           }
         }
+        case Failure(e) => e.printStackTrace()
+      }
+      prom.future
+    }
+
+    def calendar(no:String, month: Int) = {
+      val days = Util.getDaysWithMonth(month)
+      val logger = LoggerFactory.getLogger(getClass)
+//      logger.info("days.head : " + days.head + " days.last : " + days.last)
+      val prom = Promise[Seq[Diary]]()
+      findDiaries(no, days.head, days.last) onComplete {
+        case Success(v) => prom.complete(Try(v))
         case Failure(e) => e.printStackTrace()
       }
       prom.future
@@ -130,5 +143,9 @@ object Tables {
     // def find(no: String) = db.run((for (account <- accounts if account.no === no) yield account).result.headOption) // imperative way
     def findAccount(no: String) = db.run(accounts.filter(_.no === no).result.headOption)
     def findDiary(no: String) = db.run(diaries.filter(_.no === no).result.headOption)
+    def findDiaries(no: String, firstDay: Int, lastDay: Int) =
+      db.run(diaries.filter(d =>
+        d.no === no && (d.dayOfYear >= firstDay && d.dayOfYear <= lastDay)).result)
+
   }
 }

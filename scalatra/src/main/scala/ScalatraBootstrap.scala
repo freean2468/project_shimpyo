@@ -6,10 +6,9 @@ import slick.jdbc.JdbcBackend.Database
 
 import javax.servlet.ServletContext
 
+
 class ScalatraBootstrap extends LifeCycle{
   val logger = LoggerFactory.getLogger(getClass)
-  val system = ActorSystem()
-  val actor = system.actorOf(Props[ServiceActor])
   val db = System.getenv("RDS_HOSTNAME") match {
     case null => Database.forConfig("mydb")
     case _ => {
@@ -22,13 +21,12 @@ class ScalatraBootstrap extends LifeCycle{
   }
 
   override def init(context: ServletContext) {
-    context.mount(new RouteApp(db, system, actor), "/*")
+    context.mount(new RouteApp(db), "/*")
 //    context.mount(new ServletMain, "/*")
 //    context.mount(new Articles, "/articles/*")
   }
 
   override def destroy(context:ServletContext) {
     super.destroy(context)
-    system.terminate()
   }
 }
