@@ -1,16 +1,15 @@
 package com.mirae.shimpyo
 
-import com.mirae.shimpyo.scalatrabase.ServletMain
 import org.scalatra.test.scalatest._
 
-class ServletMainTests extends ScalatraFunSuite {
+//class ServletMainTests extends ScalatraFunSuite {
 
-  addServlet(classOf[ServletMain], "/*")
+//  addServlet(classOf[ServletMain], "/*")
+//
+//  test("GET / on ServletMain should return status 200") {
+//    get("/") {
+//      status should equal (200)
+//    }
+//  }
 
-  test("GET / on ServletMain should return status 200") {
-    get("/") {
-      status should equal (200)
-    }
-  }
-
-}
+//}
