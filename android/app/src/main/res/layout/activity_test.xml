@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ActivityTest">
+    tools:context=".activity.ActivityTest">
 
     <TextView
         android:id="@+id/textView"
@@ -26,11 +26,6 @@
 
     <TextView
         android:id="@+id/textViewUseCase"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-    <com.kakao.usermgmt.LoginButton
-        android:id="@+id/buttonLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

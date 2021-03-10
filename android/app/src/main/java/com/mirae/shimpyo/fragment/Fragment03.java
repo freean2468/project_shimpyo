@@ -1,4 +1,4 @@
-package com.mirae.shimpyo;
+package com.mirae.shimpyo.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,18 +9,23 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-public class Fragment02 extends Fragment {
+import com.mirae.shimpyo.R;
+
+public class Fragment03 extends Fragment {
     private View view;
 
-    public static Fragment02 newInstance(){
-        Fragment02 fragment02 = new Fragment02();
-        return fragment02;
+    public static Fragment03 instance = new Fragment03();
+
+    private Fragment03() {
+
     }
+
+    public static Fragment03 getInstance(){ return instance; }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment02, container, false);
+        view = inflater.inflate(R.layout.fragment03, container, false);
 
         return view;
     }

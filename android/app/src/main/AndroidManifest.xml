@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
-        android:name=".KakaoInterface"
+        android:name=".object.ObjectKakao"
         android:usesCleartextTraffic="true"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -16,7 +16,17 @@
         <meta-data
         android:name="com.kakao.sdk.AppKey"
         android:value="@string/kakao_app_key" />
-        <activity android:name=".ActivityTest">
+        <activity android:name=".activity.ActivityTest">
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+        </activity>
+        <activity android:name=".activity.ActivityQA">
+
+        </activity>
+        <activity android:name=".activity.ActivityLogin">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Shimpyo</string>
-    <string name="host_name_for_service">http://shimpyo-env.eba-gxbgkhwf.ap-northeast-2.elasticbeanstalk.com/</string>
+    <string name="host_name_for_service">http://shimpyov3-env.eba-eefivrrp.ap-northeast-2.elasticbeanstalk.com/</string>
     <string name="host_name_for_development">http://10.0.2.2:8080/</string>
     <string name="url_login">service/login/1?</string>
     <string name="url_selectAll">db/selectAll</string>
