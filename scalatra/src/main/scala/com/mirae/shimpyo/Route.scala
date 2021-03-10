@@ -1,7 +1,5 @@
 package com.mirae.shimpyo
 
-import akka.actor.{ActorRef, ActorSystem}
-import akka.util.Timeout
 import com.mirae.shimpyo.database.Tables
 import com.mirae.shimpyo.database.Tables.{Account, Repository}
 import org.json4s.{DefaultFormats, Formats}
@@ -11,21 +9,21 @@ import slick.jdbc.JdbcBackend.Database
 import slick.jdbc.MySQLProfile.api._
 
 import scala.concurrent.{ExecutionContext, Future}
-import scala.concurrent.duration._
-import _root_.akka.dispatch._
 
-import javax.servlet.ServletContext
-
+/**
+ *  ScalatraBase는 Scalatra DSL을 구현해주고
+ *  JacksonJsonSupport는 모든 데이터를 Json으로 암묵적 형변환을 구현해주고
+ *  FutureSupport는 비동기 응답을 가능케 한다.
+ *
+ */
 trait Route extends ScalatraBase with JacksonJsonSupport with FutureSupport{
-  // Sets up automatic case class to JSON output serialization, required by the JValueResult trait.
+  /** Sets up automatic case class to JSON output serialization, required by the JValueResult trait. */
   protected implicit lazy val jsonFormats: Formats = DefaultFormats
-
-  implicit val timeout = new Timeout(2.seconds)
 
   def db: Database
   val repository = new Repository(db)
 
-  /*
+  /**
     /db/ routing
    */
   get("/db/init") {
@@ -63,7 +61,7 @@ trait Route extends ScalatraBase with JacksonJsonSupport with FutureSupport{
     Tables.accounts
   }
 
-  /*
+  /**
     /service/ routing
    */
   get("/service/login/:id") {
@@ -91,7 +89,37 @@ trait Route extends ScalatraBase with JacksonJsonSupport with FutureSupport{
   }
 }
 
+/** 기본 routing 클래스
+ *
+ * @param db config 정보
+ */
 class RouteApp (val db: Database) extends ScalatraServlet with Route {
   protected implicit def executor: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
 //  protected implicit def executor: ExecutionContext = system.dispatcher
 }
+
+//
+//
+///** 최초 route 설정 시 실패할 경우 등록되어 돌아가는 route
+// *
+// *
+// */
+//trait ConfigFailedRoute extends ScalatraBase with JacksonJsonSupport with FutureSupport{
+//  // Sets up automatic case class to JSON output serialization, required by the JValueResult trait.
+//  protected implicit lazy val jsonFormats: Formats = DefaultFormats
+//
+//  get("/") {
+//    val res = "IS_EB : " + System.getenv("IS_EB")
+//  }
+//
+//  error {
+//    case e: NoSuchElementException => e.printStackTrace()
+//    case e: NumberFormatException => e.printStackTrace()
+//    case e: Exception => e.printStackTrace()
+//  }
+//}
+//
+//class ConfigFailedRouteApp () extends ScalatraServlet with ConfigFailedRoute {
+//  protected implicit def executor: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
+//  //  protected implicit def executor: ExecutionContext = system.dispatcher
+//}

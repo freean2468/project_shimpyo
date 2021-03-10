@@ -4,7 +4,15 @@ import java.time.{LocalDate, Year}
 import java.util.{Calendar, Date}
 import java.time.temporal.TemporalAdjusters
 
+/** 각종 기능의 함수들을 모아놓은 object
+ *
+ */
 object Util {
+  /** 각 달의 첫 일과 마지막 일을 dayOfYear 기준으로 반환한다.
+   *
+   * @param month 특정 달(1~12)
+   * @return List.head == 각 달의 첫 일의 dayOfYear, last == 각 달의 마지막 일의 dayOfYear
+   */
   def getDaysWithMonth(month:Int) = {
     val firstAdjuster = TemporalAdjusters.firstDayOfMonth
     val lastAdjuster = TemporalAdjusters.lastDayOfMonth
@@ -17,6 +25,10 @@ object Util {
     List(convertLocalDateToDate(firstDayOfMonth), convertLocalDateToDate(lastDayOfMonth))
   }
 
+  /** 현재 시스템 시간을 기준으로 현재 달의 첫 일과 마지막 일을 dayOfYear 기준으로 반환한다.
+   *
+   * @return List.head == 현재 달의 첫 일의 dayOfYear, last == 현재 달의 마지막 일의 dayOfYear
+   */
   def getDaysWithNow() = {
     val firstAdjuster = TemporalAdjusters.firstDayOfMonth
     val lastAdjuster = TemporalAdjusters.lastDayOfMonth
@@ -29,6 +41,11 @@ object Util {
     List(convertLocalDateToDate(firstDayOfMonth), convertLocalDateToDate(lastDayOfMonth))
   }
 
+  /** LocalDate 타입을 Date 타입으로 변경해주는 함수
+   *
+   * @param localDate 변경하려는 LocalDate
+   * @return 변환된 Date
+   */
   def convertLocalDateToDate(localDate: LocalDate) = {
     import java.time.ZoneId
 
