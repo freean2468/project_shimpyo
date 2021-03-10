@@ -45,9 +45,9 @@ delimiter ;
 
 call proc_init();
 
-select * from `question_table`;
-select * from `diary_table`;
-select * from `account_table`;
+select * from `shimpyo`.`question_table`;
+select * from `shimpyo`.`diary_table`;
+select * from `shimpyo`.`account_table`;
 
 -- Slick에서 procedure 호출이 안 된다.
 drop procedure if exists `proc_login`;

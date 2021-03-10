@@ -17,13 +17,13 @@ import scala.concurrent.{ExecutionContext, Future}
  *
  */
 trait Route extends ScalatraBase with JacksonJsonSupport with FutureSupport{
-  // Sets up automatic case class to JSON output serialization, required by the JValueResult trait.
+  /** Sets up automatic case class to JSON output serialization, required by the JValueResult trait. */
   protected implicit lazy val jsonFormats: Formats = DefaultFormats
 
   def db: Database
   val repository = new Repository(db)
 
-  /*
+  /**
     /db/ routing
    */
   get("/db/init") {
@@ -61,7 +61,7 @@ trait Route extends ScalatraBase with JacksonJsonSupport with FutureSupport{
     Tables.accounts
   }
 
-  /*
+  /**
     /service/ routing
    */
   get("/service/login/:id") {
@@ -89,7 +89,37 @@ trait Route extends ScalatraBase with JacksonJsonSupport with FutureSupport{
   }
 }
 
+/** 기본 routing 클래스
+ *
+ * @param db config 정보
+ */
 class RouteApp (val db: Database) extends ScalatraServlet with Route {
   protected implicit def executor: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
 //  protected implicit def executor: ExecutionContext = system.dispatcher
 }
+
+//
+//
+///** 최초 route 설정 시 실패할 경우 등록되어 돌아가는 route
+// *
+// *
+// */
+//trait ConfigFailedRoute extends ScalatraBase with JacksonJsonSupport with FutureSupport{
+//  // Sets up automatic case class to JSON output serialization, required by the JValueResult trait.
+//  protected implicit lazy val jsonFormats: Formats = DefaultFormats
+//
+//  get("/") {
+//    val res = "IS_EB : " + System.getenv("IS_EB")
+//  }
+//
+//  error {
+//    case e: NoSuchElementException => e.printStackTrace()
+//    case e: NumberFormatException => e.printStackTrace()
+//    case e: Exception => e.printStackTrace()
+//  }
+//}
+//
+//class ConfigFailedRouteApp () extends ScalatraServlet with ConfigFailedRoute {
+//  protected implicit def executor: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
+//  //  protected implicit def executor: ExecutionContext = system.dispatcher
+//}
