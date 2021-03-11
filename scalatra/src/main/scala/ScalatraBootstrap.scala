@@ -1,4 +1,4 @@
-import com.mirae.shimpyo.{RouteApp}
+import com.mirae.shimpyo.route.{DBRouteServlet, ServiceRouteServlet}
 import com.typesafe.config.ConfigFactory
 import org.scalatra._
 import org.slf4j.LoggerFactory
@@ -31,7 +31,7 @@ class ScalatraBootstrap extends LifeCycle{
     val isEb = System.getenv("IS_EB")
     val rdsMysql = ConfigFactory.parseResources("application.conf")
 
-    val db = isEb match {
+    val serviceDb = isEb match {
       case "1" => {
         Database.forURL(
           rdsMysql.getString("RDSMySQL.url"),
@@ -44,7 +44,8 @@ class ScalatraBootstrap extends LifeCycle{
       }
     }
 
-    context.mount(new RouteApp(db), "/*")
+    context.mount(new ServiceRouteServlet(serviceDb), "/service")
+    context.mount(new DBRouteServlet(serviceDb), "/db")
   }
 
   /** servlet 자원 종료

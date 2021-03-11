@@ -3,7 +3,7 @@ val ScalatraVersion = "2.7.1"
 ThisBuild / scalaVersion := "2.13.4"
 ThisBuild / organization := "com.mirae"
 
-lazy val hello = (project in file("."))
+lazy val root = (project in file("."))
   .settings(
     name := "shimpyo",
     version := "0.0.1",
@@ -19,12 +19,14 @@ lazy val hello = (project in file("."))
       "mysql" % "mysql-connector-java" % "8.0.11",
       "com.typesafe.slick" %% "slick" % "3.3.2",
 
-      // for Json formatting packages
+      // Json formatting packages
       "org.scalatra" %% "scalatra-json" % "2.7.0",
       "org.json4s" %% "json4s-jackson" % "3.6.11",
 
       // for configuration
-      "com.typesafe" % "config" % "1.4.1"
+      "com.typesafe" % "config" % "1.4.1",
+
+      "org.scalatra" %% "scalatra-scalate" % "2.7.0"
     ),
   )
 

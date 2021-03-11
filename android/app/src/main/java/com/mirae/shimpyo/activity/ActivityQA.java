@@ -55,7 +55,7 @@ public class ActivityQA extends AppCompatActivity {
 
                     fragment01.setNo(this.no);
 
-                    Log.i("WEB_SERVER",this.no + "님 일년의 쉼표, " + this.dayOfYear + "일쨰 날입니다.");
+                    Log.i("WEB_SERVER",this.no + "님 일년의 쉼표, " + this.dayOfYear + "일째 날입니다.");
                 }
             },
             error -> { Toast.makeText(Fragment01.getInstance().getActivity().getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show(); }
