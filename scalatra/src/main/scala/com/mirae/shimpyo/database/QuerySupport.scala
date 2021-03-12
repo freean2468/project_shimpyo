@@ -20,6 +20,8 @@ import slick.jdbc.MySQLProfile.api._
 trait QuerySupport {
   import scala.concurrent.ExecutionContext.Implicits.global
 
+  val logger = LoggerFactory.getLogger(getClass)
+
   /** Create
    *
    */
@@ -38,6 +40,23 @@ trait QuerySupport {
     db.run(insertAction)
   }
 
+  def answer(db: Database, no: String, dayOfYear: Int, answer: String, photo: Array[Byte]) = {
+    val prom = Promise[Int]()
+    findDiary(db, no, dayOfYear) onComplete {
+      case Failure(e) => {
+        prom.failure(e)
+        e.printStackTrace()
+      }
+      case Success(res) => {
+        res match {
+          case Some(_) => updateDiary(db, Diary(no, dayOfYear, Option(answer), Option(photo)))
+          case None => insert(db, Diary(no, dayOfYear, Option(answer), Option(photo)))
+        }
+      }
+    }
+    prom.future
+  }
+
   /** Read
    *
    */
@@ -45,15 +64,24 @@ trait QuerySupport {
     db.run(sql"select * from account_table".as[(String, String)])
 
   // def find(no: String) = db.run((for (account <- accounts if account.no === no) yield account).result.headOption) // imperative way
-  def findAccount(db: Database, no: String) = db.run(accounts.filter(_.no === no).result.headOption)
-  def findDiary(db: Database, no: String) = db.run(diaries.filter(_.no === no).result.headOption)
+  def findAccount(db: Database, no: String) =
+    db.run(accounts.filter(_.no === no).result.headOption)
+
+  def findDiary(db: Database, no: String, dayOfYears: Int) =
+    db.run(diaries.filter(_.no === no).filter(_.dayOfYear === dayOfYears).result.headOption)
+
   def findDiaries(db: Database, no: String, firstDay: Int, lastDay: Int) =
     db.run(diaries.filter(d =>
       d.no === no && (d.dayOfYear >= firstDay && d.dayOfYear <= lastDay)).result)
 
-
-  def login(db: Database, no:String) = {
-    val logger = LoggerFactory.getLogger(getClass)
+  /**
+   * 유저가 로그인 시 호출하는 함수. 회원 번호를 받아 account_table에 계정이 없으면 새로 생성한다.
+   * 기존 유저이면서 dayOfYear에 작성한 diary record가 있다면 해당 값들을 반환해주고 없다면 null로 셋팅해 반환.
+   * @param db
+   * @param no 유저 카카오톡 회원 번호
+   * @return 비동기 diary record
+   */
+  def login(db: Database, no:String, dayOfYear:Int) = {
     val prom = Promise[Diary]()
     findAccount(db, no) onComplete {
       case Failure(e) => {
@@ -63,30 +91,21 @@ trait QuerySupport {
       case Success(count) => {
         count match {
           case None => {
-            //              logger.info("count None")
-            insert(db, Account(no, null))
-            insert(db, Diary(no, Calendar.getInstance.get(Calendar.DAY_OF_YEAR), Some(""), null)) onComplete {
+            insert(db, Account(no, null)) onComplete {
               case Failure(e) => {
                 prom.failure(e)
                 e.printStackTrace()
               }
-              case Success(count) => {
-                findDiary(db, no) onComplete {
-                  case Success(r) => prom.complete(Try(r.get))
-                  case Failure(e) => {
-                    prom.failure(e)
-                    e.printStackTrace()
-                  }
-                }
-              }
+              case Success(count) => prom.complete(Try(Diary(no, dayOfYear, None, None)))
             }
           }
-          case _ => {
-            //              logger.info("count Some, no : " + no)
-            findDiary(db, no) onComplete {
+          case Some(x) => {
+            findDiary(db, no, dayOfYear) onComplete {
               case Success(r) => {
-                logger.info(r.get.toString)
-                prom.complete(Try(r.get))
+                r match {
+                  case diary => prom.complete(Try(diary.get))
+                  case None => prom.complete(Try(Diary(no, dayOfYear, None, None)))
+                }
               }
               case Failure(e) => {
                 prom.failure(e)
@@ -102,8 +121,6 @@ trait QuerySupport {
 
   def calendar(db: Database, no:String, month: Int) = {
     val days = Util.getDaysWithMonth(month)
-    val logger = LoggerFactory.getLogger(getClass)
-    //      logger.info("days.head : " + days.head + " days.last : " + days.last)
     val prom = Promise[Seq[Diary]]()
     findDiaries(db, no, days.head, days.last) onComplete {
       case Success(v) => prom.complete(Try(v))
@@ -118,8 +135,15 @@ trait QuerySupport {
   /** Update
    *
    */
-  def update(db: Database, no: String, pwTo: String) = {
-    val updateAction = (for { a <- accounts if a.no === no } yield a.pw).update(pwTo)
+  def updateAccountPassword(db: Database, newA:Account) = {
+    val updateAction = (for {a <- accounts if a.no === newA.no} yield a.pw).update(newA.pw.getOrElse(null))
+    db.run(updateAction)
+  }
+
+  def updateDiary(db: Database, newD: Diary) = {
+    val updateAction = (for {
+      d <- diaries if d.no === newD.no && d.dayOfYear === newD.dayOfYear
+    } yield (d.answer, d.photo)).update((newD.answer.getOrElse(null), newD.photo.getOrElse(null)))
     db.run(updateAction)
   }
 

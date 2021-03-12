@@ -7,20 +7,30 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="30dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginRight="30dp"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/textViewDayOfYear"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginBottom="5dp"
-            android:fontFamily="@font/font"
-            android:gravity="bottom"
-            android:text="물오름달 스물이드레 흙날"
-            android:textSize="15dp" />
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/textViewDayOfYear"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:layout_marginBottom="5dp"
+                android:fontFamily="@font/font"
+                android:gravity="bottom"
+                android:text="물오름달 스물이드레 흙날"
+                android:textSize="15dp" />
+            <Button
+                android:id="@+id/buttonAnswer"
+                android:layout_weight="4"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:backgroundTint="#22222222"
+                android:text="제출"/>
+        </LinearLayout>
 
         <TextView
             android:id="@+id/textViewQuestion"
@@ -33,15 +43,16 @@
             android:textSize="20dp" />
 
         <EditText
+            android:id="@+id/editTextAnswer"
             android:layout_width="match_parent"
             android:layout_height="595dp"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
             android:layout_marginRight="10dp"
-            android:background="#9FD2EA"
+            android:background="#339FD2EA"
             android:fontFamily="@font/font"
             android:gravity="top"
-            android:text="  당신의 하루는 >>"
+            android:hint="  당신의 하루는 >>"
             android:textColor="#776C6C" />
 
     </LinearLayout>

@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -18,6 +20,7 @@ import com.kakao.usermgmt.callback.MeV2ResponseCallback;
 import com.kakao.usermgmt.response.MeV2Response;
 import com.kakao.util.exception.KakaoException;
 import com.mirae.shimpyo.R;
+import com.mirae.shimpyo.object.ObjectVolley;
 
 import static com.kakao.util.helper.Utility.getKeyHash;
 
@@ -65,7 +68,7 @@ public class ActivityLogin extends AppCompatActivity {
                      * 성공했으니 회원번호를 가지고 다음 Activity인 ActivityQA로 이
                      */
                     Intent intent = new Intent(getApplicationContext(), ActivityQA.class);
-                    intent.putExtra("no", result.getId());
+                    intent.putExtra("no", String.valueOf(result.getId()));
                     startActivity(intent);
 
 
@@ -112,6 +115,15 @@ public class ActivityLogin extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         com.kakao.usermgmt.LoginButton buttonLogin = findViewById(R.id.buttonLogin);
+        TextView textViewHostName = findViewById(R.id.textViewHostName);
+        ObjectVolley objectVolley = ObjectVolley.getInstance(this);
+        textViewHostName.setText(objectVolley.getHostName());
+
+        Switch switchToggleServer = findViewById(R.id.switchToggleServer);
+        switchToggleServer.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            objectVolley.toggleUseCase();
+            textViewHostName.setText(objectVolley.getHostName());
+        });
 
         Session session = Session.getCurrentSession();
         session.addCallback(sessionCallback);

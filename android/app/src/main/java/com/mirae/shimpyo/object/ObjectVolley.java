@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
+import android.util.Log;
 
 import androidx.collection.LruCache;
 
@@ -15,6 +16,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.mirae.shimpyo.R;
+import com.mirae.shimpyo.util.Util;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -61,18 +63,6 @@ public class ObjectVolley {
         hostNameForDevelopment = ctx.getString(R.string.host_name_for_development);
 
         hostName = hostNameForService;
-    }
-
-    /**
-     * 카카오 로그인 후 회원번호로 다시 자체 웹서버에 회원 정보를 요청하는 함수
-     * @param no 카카오 회원 번호
-     * @param listener 응답 성공 시 RequestLoginLister에서 jobToDo() 함수에서 로직을 구현할 것.
-     * @param errorListener 응답 실패 시 Listener
-     */
-    public void requestKakaoLogin(String no, RequestLoginListener listener, Response.ErrorListener errorListener) {
-        String url = hostName + ctx.getString(R.string.url_login) + "no=" + no;
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, listener, errorListener);
-        addToRequestQueue(request);
     }
 
     /**
@@ -129,11 +119,27 @@ public class ObjectVolley {
         return imageLoader;
     }
 
+    /**
+     * 카카오 로그인 후 회원번호로 다시 자체 웹서버에 회원 정보를 요청하는 함수
+     * @param no 카카오 회원 번호
+     * @param listener 응답 성공 시 RequestLoginLister에서 jobToDo() 함수에서 로직을 구현할 것.
+     * @param errorListener 응답 실패 시 Listener
+     */
+    public void requestKakaoLogin(String no, int dayOfYear, RequestLoginListener listener, Response.ErrorListener errorListener) {
+        String url = hostName + ctx.getString(R.string.url_login) + "no=" + no + "&d=" + dayOfYear;
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, listener, errorListener);
+        addToRequestQueue(request);
+    }
+
+    /**
+     * RequstLogin 요청에 대한 응답 wrapper abstract class
+     * jobToDo 내용만 구현하고, 필드가 null인지 아닌지만 확인해서 사용하면 된다.
+     */
     abstract public static class RequestLoginListener implements Response.Listener<JSONObject> {
         protected String no;
         protected int dayOfYear;
         protected String answer;
-        protected byte[] photo = null;
+        protected byte[] photo = new byte[]{};
 
         @Override
         public void onResponse(JSONObject response) {
@@ -146,12 +152,43 @@ public class ObjectVolley {
             }
             if (!response.isNull("photo")) {
                 try {
-                    photo = Base64.decode(response.getString("photo"), Base64.DEFAULT);
-//                    photo = BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
+                    photo = Util.stringToByteArray(response.getString("photo"));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
+            jobToDo();
+        }
+
+        public abstract void jobToDo();
+    }
+
+    /**
+     * 유저가 질문에 대한 답변을 작성한 후 서버에 제출할 때 호출하는 함수
+     *
+     * @param no 유저 회원번호
+     * @param dayOfYear 365일 중 몇 번째 날?
+     * @param answer 유저가 질문에 대답해 작성한 내용
+     * @param photo byte[]
+     * @param listener 성공 시 Listener
+     * @param errorListener 실패 시 Listener
+     */
+    public void requestAnswer(String no, int dayOfYear, String answer, byte[] photo, RequestAnswerListener listener, Response.ErrorListener errorListener) {
+        String url = hostName + ctx.getString(R.string.url_answer) +
+                "no=" + no + "&d=" + dayOfYear + "&a=" + answer + "&p=" + Util.byteArrayToString(photo);
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, null, listener, errorListener);
+        addToRequestQueue(request);
+    }
+
+    /**
+     * RequstAnswer 요청에 대한 응답 wrapper abstract class
+     * jobToDo 내용만 구현하고, 필드가 null인지 아닌지만 확인해서 사용하면 된다.
+     */
+    abstract public static class RequestAnswerListener implements Response.Listener<JSONObject> {
+
+        @Override
+        public void onResponse(JSONObject response) {
+            Log.d(ctx.getString(R.string.TAG_SERVER), response.toString());
             jobToDo();
         }
 

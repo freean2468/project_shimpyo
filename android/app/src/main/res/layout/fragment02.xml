@@ -7,10 +7,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="60dp"
-        android:layout_marginRight="20dp"
-        android:background="#ED9DB8"
+        android:background="#33ED9DB8"
         android:gravity="center">
 
         <TextView

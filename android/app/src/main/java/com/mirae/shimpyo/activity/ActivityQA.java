@@ -6,6 +6,8 @@ import androidx.viewpager.widget.ViewPager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
@@ -13,6 +15,8 @@ import com.mirae.shimpyo.adaptor.AdaptorViewPager;
 import com.mirae.shimpyo.R;
 import com.mirae.shimpyo.fragment.Fragment01;
 import com.mirae.shimpyo.object.ObjectVolley;
+
+import java.util.Calendar;
 
 /**
  *
@@ -40,26 +44,44 @@ public class ActivityQA extends AppCompatActivity {
          * @author 송훈일(freean2468@gmail.com)
          */
         Intent intent = getIntent();
-        long no = intent.getLongExtra("no", 0);
+        String no = intent.getStringExtra("no");
+        int dayOfYear = Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
 
         Log.i("WEB_SERVER", "no : " + no);
 
         ObjectVolley objectVolley = ObjectVolley.getInstance(this);
 
-        ActivityQA activity = this;
         objectVolley.requestKakaoLogin(
-            Long.toString(no),
+            no,
+            dayOfYear,
             new ObjectVolley.RequestLoginListener() {
                 @Override public void jobToDo() {
                     Fragment01 fragment01 = Fragment01.getInstance();
-
                     fragment01.setNo(this.no);
-
-                    Log.i("WEB_SERVER",this.no + "님 일년의 쉼표, " + this.dayOfYear + "일째 날입니다.");
+                    fragment01.setDayOfYear(this.dayOfYear);
+                    fragment01.setAnswer(this.answer);
+                    fragment01.setPhoto(this.photo);
                 }
             },
-            error -> { Toast.makeText(Fragment01.getInstance().getActivity().getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show(); }
+            error -> { Log.e(getString(R.string.TAG_SERVER), "RequestLogin error"); }
         );
-
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i("CYCLE", "onResume");
+    }
+
+
+    /**
+     * service 시 주석을 풀면 로그인화면이 아니라 Home 화면으로 나가게 해준다.
+     */
+//    @Override
+//    public void onBackPressed() {
+//        Intent intent = new Intent(Intent.ACTION_MAIN);
+//        intent.addCategory(Intent.CATEGORY_HOME);
+//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        startActivity(intent);
+//    }
 }

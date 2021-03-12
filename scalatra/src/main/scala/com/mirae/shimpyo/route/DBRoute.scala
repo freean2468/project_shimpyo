@@ -35,7 +35,7 @@ trait DBRoute extends ScalatraBase with JacksonJsonSupport with FutureSupport wi
   get("/update/:pw") {
     val no = params("no")
     val pwTo = params("pwTo")
-    update(db, no, pwTo)
+    updateAccountPassword(db, Account(no, Option(pwTo)))
   }
 
   get("/delete") {
