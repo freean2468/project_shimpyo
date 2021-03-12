@@ -18,6 +18,7 @@ import com.mirae.shimpyo.object.ObjectVolley;
  *
  *
  * @author 허선영
+ *
  */
 public class ActivityQA extends AppCompatActivity {
     private AdaptorViewPager fragmentPagerAdapter;
