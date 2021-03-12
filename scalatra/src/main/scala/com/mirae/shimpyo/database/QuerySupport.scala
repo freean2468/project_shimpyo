@@ -103,7 +103,7 @@ trait QuerySupport {
             findDiary(db, no, dayOfYear) onComplete {
               case Success(r) => {
                 r match {
-                  case diary => prom.complete(Try(diary.get))
+                  case Some(diary) => prom.complete(Try(diary))
                   case None => prom.complete(Try(Diary(no, dayOfYear, None, None)))
                 }
               }

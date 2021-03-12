@@ -3,12 +3,7 @@ package com.mirae.shimpyo.activity;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Switch;
-import android.widget.TextView;
 
-import com.mirae.shimpyo.object.ObjectVolley;
 import com.mirae.shimpyo.R;
 
 /**

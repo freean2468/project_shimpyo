@@ -14,7 +14,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.mirae.shimpyo.R;
-import com.mirae.shimpyo.activity.ActivityQA;
 import com.mirae.shimpyo.object.ObjectVolley;
 
 public class Fragment01 extends Fragment {
@@ -84,10 +83,11 @@ public class Fragment01 extends Fragment {
 
     public void setAnswer(String answer) {
         this.answer = answer;
-        Log.d("debug", this.answer);
         EditText editTextAnswer = view.findViewById(R.id.editTextAnswer);
         editTextAnswer.setText(this.answer);
     }
 
-    public void setPhoto(byte[] photo) { this.photo = photo; }
+    public void setPhoto(byte[] photo) {
+        this.photo = photo;
+    }
 }

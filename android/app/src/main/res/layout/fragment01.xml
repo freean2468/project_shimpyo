@@ -29,7 +29,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:backgroundTint="#22222222"
-                android:text="제출"/>
+                android:text="저장"/>
         </LinearLayout>
 
         <TextView

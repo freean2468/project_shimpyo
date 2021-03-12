@@ -14,13 +14,18 @@ import com.mirae.shimpyo.R;
 public class Fragment02 extends Fragment {
     private View view;
 
-    public static Fragment02 instance = new Fragment02();
+    public static Fragment02 instance = null;
 
     private Fragment02() {
 
     }
 
-    public static Fragment02 getInstance(){ return instance; }
+    public static Fragment02 getInstance(){
+        if (instance == null) {
+            instance = new Fragment02();
+        }
+        return instance;
+    }
 
     @Nullable
     @Override
