@@ -52,14 +52,11 @@ public class ActivityQA extends AppCompatActivity {
             new ObjectVolley.RequestLoginListener() {
                 @Override public void jobToDo() {
                     Fragment01 fragment01 = Fragment01.getInstance();
-
                     fragment01.setNo(this.no);
-
                     Log.i("WEB_SERVER",this.no + "님 일년의 쉼표, " + this.dayOfYear + "일쨰 날입니다.");
                 }
             },
             error -> { Toast.makeText(Fragment01.getInstance().getActivity().getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show(); }
         );
-
     }
 }
