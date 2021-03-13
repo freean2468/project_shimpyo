@@ -68,10 +68,10 @@ public class Fragment01 extends Fragment {
                 new ObjectVolley.RequestAnswerListener() {
                     @Override
                     public void jobToDo() {
-                        Log.e(getString(R.string.TAG_SERVER), "응답 성공");
+                        Log.e(getString(R.string.tag_server), "응답 성공");
                     }
                 },
-                error -> { Log.e(getString(R.string.TAG_SERVER), error.toString()); }
+                error -> { Log.e(getString(R.string.tag_server), error.toString()); }
             );
         });
 

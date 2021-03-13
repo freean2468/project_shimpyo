@@ -186,7 +186,7 @@ public class ObjectVolley {
 
         @Override
         public void onResponse(JSONObject response) {
-            Log.d(ctx.getString(R.string.TAG_SERVER), response.toString());
+            Log.d(ctx.getString(R.string.tag_server), response.toString());
             jobToDo();
         }
 

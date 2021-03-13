@@ -6,5 +6,5 @@
     <string name="url_selectAll">db/selectAll</string>
     <string name="url_answer">service/answer/1?</string>
     <string name="kakao_app_key">7296adf98bdaa2d1a1f8e38c38b448db</string>
-    <string name="TAG_SERVER">res_server</string>
+    <string name="tag_server">res_server</string>
 </resources>

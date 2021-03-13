@@ -46,7 +46,7 @@ public class ActivityQA extends AppCompatActivity {
         no = intent.getStringExtra("no");
         int dayOfYear = Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
 
-        Log.i(getString(R.string.TAG_SERVER), "ActivityQA onCreate no : " + no);
+        Log.i(getString(R.string.tag_server), "ActivityQA onCreate no : " + no);
 
         ObjectVolley objectVolley = ObjectVolley.getInstance(this);
 
@@ -62,7 +62,7 @@ public class ActivityQA extends AppCompatActivity {
                     fragment01.setPhoto(this.photo);
                 }
             },
-            error -> { Log.e(getString(R.string.TAG_SERVER), "RequestLogin error"); }
+            error -> { Log.e(getString(R.string.tag_server), "RequestLogin error"); }
         );
     }
 
