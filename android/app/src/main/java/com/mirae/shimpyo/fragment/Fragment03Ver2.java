@@ -21,7 +21,7 @@ import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-public class Fragment03Ver2 extends Fragment implements AdapterCalendar.OnItemListener{
+public class Fragment03Ver2 extends Fragment {
     private View view;
     private TextView TextViewMonthYear;
     private RecyclerView RectclerViewCalendar;
@@ -29,9 +29,7 @@ public class Fragment03Ver2 extends Fragment implements AdapterCalendar.OnItemLi
 
     public static Fragment03Ver2 instance = null;
 
-    private Fragment03Ver2() {
-
-    }
+    private Fragment03Ver2() { }
 
     public static Fragment03Ver2 getInstance(){
         if (instance == null) {
@@ -66,7 +64,7 @@ public class Fragment03Ver2 extends Fragment implements AdapterCalendar.OnItemLi
         TextViewMonthYear.setText(monthYearFromDate(LocalDateSelect));
         ArrayList<String> daysInMonth = dayInMonthArray(LocalDateSelect);
 
-        AdapterCalendar adapterCalendar = new AdapterCalendar(daysInMonth, this);
+        AdapterCalendar adapterCalendar = new AdapterCalendar(daysInMonth);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(view.getContext(), 7);
         RectclerViewCalendar.setLayoutManager(layoutManager);
         RectclerViewCalendar.setAdapter(adapterCalendar);
@@ -108,14 +106,4 @@ public class Fragment03Ver2 extends Fragment implements AdapterCalendar.OnItemLi
         LocalDateSelect = LocalDateSelect.plusMonths(1);
         setMonthView();
     }
-
-//    @Override
-//    public void onItemClick(int position, String dayText) {
-//        if(dayText.equals("")){
-//            String message = "Selected Date " + dayText + " " + monthYearFromDate(LocalDateSelect);
-//            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
-//        }
-//    }
-
-
 }//end of class

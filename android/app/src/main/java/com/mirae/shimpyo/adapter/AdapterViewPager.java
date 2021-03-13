@@ -17,16 +17,16 @@ public class AdapterViewPager extends FragmentPagerAdapter {
     }
 
     private final static int FRAGMENT_01 = 0;
-    private final static int FRAGMENT_02 = 1;
-    private final static int FRAGMENT_03 = 2;
-    private final static int FRAGMENT_COUNT = 3;
+//    private final static int FRAGMENT_02 = 1;
+    private final static int FRAGMENT_03 = 1;
+    private final static int FRAGMENT_COUNT = 2;
 
     @NonNull
     @Override
     public Fragment getItem(int position) {
         switch (position){
             case FRAGMENT_01: return Fragment01.getInstance();
-            case FRAGMENT_02: return Fragment02.getInstance();
+//            case FRAGMENT_02: return Fragment02.getInstance();
             case FRAGMENT_03: return Fragment03Ver2.getInstance();
             default: return null;
         }
@@ -42,7 +42,7 @@ public class AdapterViewPager extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         switch (position){
             case FRAGMENT_01: return "📷";
-            case FRAGMENT_02: return "❔";
+//            case FRAGMENT_02: return "❔";
             case FRAGMENT_03: return "🌙";
             default: return null;
         }

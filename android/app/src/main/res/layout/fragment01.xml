@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -45,7 +45,8 @@
         <EditText
             android:id="@+id/editTextAnswer"
             android:layout_width="match_parent"
-            android:layout_height="595dp"
+            android:minHeight="200dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
             android:layout_marginRight="10dp"
@@ -55,7 +56,12 @@
             android:hint="  당신의 하루는 >>"
             android:textColor="#776C6C" />
 
+        <ImageView
+            android:id="@+id/imageViewPhoto"
+            android:minHeight="200dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:background="#66666666"/>
     </LinearLayout>
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
