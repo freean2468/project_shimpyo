@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.google.android.material.tabs.TabLayout;
-import com.mirae.shimpyo.adaptor.AdaptorViewPager;
+import com.mirae.shimpyo.adapter.AdapterViewPager;
 import com.mirae.shimpyo.R;
 import com.mirae.shimpyo.fragment.Fragment01;
 import com.mirae.shimpyo.object.ObjectVolley;
@@ -22,7 +22,8 @@ import java.util.Calendar;
  *
  */
 public class ActivityQA extends AppCompatActivity {
-    private AdaptorViewPager fragmentPagerAdapter;
+    private AdapterViewPager fragmentPagerAdapter;
+    private String no;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +31,7 @@ public class ActivityQA extends AppCompatActivity {
         setContentView(R.layout.activity_qa);
 
         ViewPager viewPager = findViewById(R.id.ViewPager);
-        fragmentPagerAdapter = new AdaptorViewPager(getSupportFragmentManager());
+        fragmentPagerAdapter = new AdapterViewPager(getSupportFragmentManager());
 
         TabLayout tabLayout = findViewById(R.id.TabLayout);
         viewPager.setAdapter(fragmentPagerAdapter);
@@ -42,10 +43,10 @@ public class ActivityQA extends AppCompatActivity {
          * @author 송훈일(freean2468@gmail.com)
          */
         Intent intent = getIntent();
-        String no = intent.getStringExtra("no");
+        no = intent.getStringExtra("no");
         int dayOfYear = Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
 
-        Log.i("WEB_SERVER", "no : " + no);
+        Log.i(getString(R.string.TAG_SERVER), "ActivityQA onCreate no : " + no);
 
         ObjectVolley objectVolley = ObjectVolley.getInstance(this);
 

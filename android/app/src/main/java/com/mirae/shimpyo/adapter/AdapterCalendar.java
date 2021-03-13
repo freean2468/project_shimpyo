@@ -1,4 +1,4 @@
-package com.mirae.shimpyo.adaptor;
+package com.mirae.shimpyo.adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,15 +8,15 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mirae.shimpyo.R;
-import com.mirae.shimpyo.activity.CalendarViewHolder;
+import com.mirae.shimpyo.holder.CalendarViewHolder;
 
 import java.util.ArrayList;
 
-public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
+public class AdapterCalendar extends RecyclerView.Adapter<CalendarViewHolder> {
     private final ArrayList<String> daysOfMonth;
     private final OnItemListener onItemListener;
 
-    public CalendarAdapter(ArrayList<String> textViewDaysOfMonth, CalendarAdapter.OnItemListener onItemListener) {
+    public AdapterCalendar(ArrayList<String> textViewDaysOfMonth, AdapterCalendar.OnItemListener onItemListener) {
         daysOfMonth = textViewDaysOfMonth;
         this.onItemListener = onItemListener;
     }

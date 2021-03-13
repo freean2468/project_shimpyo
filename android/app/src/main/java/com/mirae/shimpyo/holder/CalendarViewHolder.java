@@ -1,4 +1,4 @@
-package com.mirae.shimpyo.activity;
+package com.mirae.shimpyo.holder;
 
 import android.view.View;
 import android.widget.TextView;
@@ -7,11 +7,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mirae.shimpyo.R;
-import com.mirae.shimpyo.adaptor.CalendarAdapter;
+import com.mirae.shimpyo.adapter.AdapterCalendar;
 
 public class CalendarViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
     public final TextView TextViewDayOfMonth;
-    private CalendarAdapter.OnItemListener onItemListener;
+    private AdapterCalendar.OnItemListener onItemListener;
 
     public CalendarViewHolder(@NonNull View itemView) {
         super(itemView);

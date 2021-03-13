@@ -23,6 +23,9 @@ public class Fragment01 extends Fragment {
     private String answer;
     private byte[] photo;
 
+    private String textDayOfYear;
+    private String textQuestion;
+
     public static Fragment01 instance = null;
 
     private Fragment01() {
@@ -43,11 +46,17 @@ public class Fragment01 extends Fragment {
 
         EditText editTextAnswer = view.findViewById(R.id.editTextAnswer);
         Button buttonAnswer = view.findViewById(R.id.buttonAnswer);
+        TextView textViewDayOfYear = view.findViewById(R.id.textViewDayOfYear);
+        TextView textViewQuestion = view.findViewById(R.id.textViewQuestion);
 
-        ObjectVolley objectVolley = ObjectVolley.getInstance(view.getContext());
+        Log.d("debug", "textViewDayOfYear text : " + textViewDayOfYear.getText().toString() +
+                ", textViewQuestion text : " + textViewQuestion.getText().toString());
+
+
+        Log.d("debug", "fragment01 onCreateView no : " + no + ", dayOfYear : " + dayOfYear + ", answer : " + answer);
 
         buttonAnswer.setOnClickListener((v) -> {
-            objectVolley.requestAnswer(
+            ObjectVolley.getInstance(v.getContext()).requestAnswer(
                 no,
                 dayOfYear,
                 editTextAnswer.getText().toString(),

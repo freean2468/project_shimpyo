@@ -1,52 +1,75 @@
-package com.mirae.shimpyo.activity;
+package com.mirae.shimpyo.fragment;
 
-import android.os.Build;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mirae.shimpyo.R;
-import com.mirae.shimpyo.adaptor.CalendarAdapter;
+import com.mirae.shimpyo.adapter.AdapterCalendar;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements CalendarAdapter.OnItemListener{
+public class Fragment03Ver2 extends Fragment implements AdapterCalendar.OnItemListener{
+    private View view;
     private TextView TextViewMonthYear;
     private RecyclerView RectclerViewCalendar;
     private LocalDate LocalDateSelect;
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
+    public static Fragment03Ver2 instance = null;
+
+    private Fragment03Ver2() {
+
+    }
+
+    public static Fragment03Ver2 getInstance(){
+        if (instance == null) {
+            instance = new Fragment03Ver2();
+        }
+        return instance;
+    }
+
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.fragment03_ver2, container, false);
+        Button buttonPreviousMonth = view.findViewById(R.id.buttonPreviousMonth);
+        Button buttonNextMonth = view.findViewById(R.id.buttonNextMonth);
+
+        buttonPreviousMonth.setOnClickListener(v -> previousMouthAction(v));
+        buttonNextMonth.setOnClickListener(v -> nextMouthAction(v));
+
         initWidgets();
         LocalDateSelect = LocalDate.now();
         setMonthView();
 
+        return view;
     }//end of onCreate
 
     private void initWidgets() {
-        RectclerViewCalendar = findViewById(R.id.RecyclerViewCalendar);
-        TextViewMonthYear = findViewById(R.id.TextViewMonthYear);
+        RectclerViewCalendar = view.findViewById(R.id.RecyclerViewCalendar);
+        TextViewMonthYear = view.findViewById(R.id.TextViewMonthYear);
     }
 
     private void setMonthView() {
         TextViewMonthYear.setText(monthYearFromDate(LocalDateSelect));
         ArrayList<String> daysInMonth = dayInMonthArray(LocalDateSelect);
 
-        CalendarAdapter calendarAdapter = new CalendarAdapter(daysInMonth, this);
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(), 7);
+        AdapterCalendar adapterCalendar = new AdapterCalendar(daysInMonth, this);
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(view.getContext(), 7);
         RectclerViewCalendar.setLayoutManager(layoutManager);
-        RectclerViewCalendar.setAdapter(calendarAdapter);
+        RectclerViewCalendar.setAdapter(adapterCalendar);
 
     }
 

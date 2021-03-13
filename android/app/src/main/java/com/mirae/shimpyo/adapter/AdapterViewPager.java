@@ -1,4 +1,4 @@
-package com.mirae.shimpyo.adaptor;
+package com.mirae.shimpyo.adapter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -8,11 +8,11 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.mirae.shimpyo.fragment.Fragment01;
 import com.mirae.shimpyo.fragment.Fragment02;
-import com.mirae.shimpyo.fragment.Fragment03;
+import com.mirae.shimpyo.fragment.Fragment03Ver2;
 
-public class AdaptorViewPager extends FragmentPagerAdapter {
+public class AdapterViewPager extends FragmentPagerAdapter {
 
-    public AdaptorViewPager(@NonNull FragmentManager fm) {
+    public AdapterViewPager(@NonNull FragmentManager fm) {
         super(fm);
     }
 
@@ -27,7 +27,7 @@ public class AdaptorViewPager extends FragmentPagerAdapter {
         switch (position){
             case FRAGMENT_01: return Fragment01.getInstance();
             case FRAGMENT_02: return Fragment02.getInstance();
-            case FRAGMENT_03: return Fragment03.getInstance();
+            case FRAGMENT_03: return Fragment03Ver2.getInstance();
             default: return null;
         }
     }
