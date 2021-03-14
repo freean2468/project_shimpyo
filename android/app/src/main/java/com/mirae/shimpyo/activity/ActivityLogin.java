@@ -1,8 +1,13 @@
 package com.mirae.shimpyo.activity;
 
+import android.app.ActionBar;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -27,7 +32,7 @@ import static com.kakao.util.helper.Utility.getKeyHash;
  *
  * @author 송훈일(freean2468@gmail.com)
  */
-public class ActivityLogin extends AppCompatActivity {
+public class ActivityLogin extends ActivityNoSystemBar {
     /**
      * 로그인 액티비티에서만 카카오 세션을 유지한다.
      */

@@ -4,8 +4,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.WindowManager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.mirae.shimpyo.adapter.AdapterViewPager;
@@ -21,7 +24,7 @@ import java.util.Calendar;
  * @author 허선영
  *
  */
-public class ActivityQA extends AppCompatActivity {
+public class ActivityQA extends ActivityNoSystemBar {
     private AdapterViewPager fragmentPagerAdapter;
     private String no;
 
@@ -64,12 +67,6 @@ public class ActivityQA extends AppCompatActivity {
             },
             error -> { Log.e(getString(R.string.tag_server), "RequestLogin error"); }
         );
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.i("CYCLE", "onResume");
     }
 
 

@@ -23,13 +23,6 @@
                 android:gravity="bottom"
                 android:text="물오름달 스물이드레 흙날"
                 android:textSize="15dp" />
-            <Button
-                android:id="@+id/buttonAnswer"
-                android:layout_weight="4"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:backgroundTint="#22222222"
-                android:text="저장"/>
         </LinearLayout>
 
         <TextView
@@ -63,5 +56,12 @@
             android:layout_height="match_parent"
             android:layout_margin="10dp"
             android:background="#66666666"/>
+
+        <Button
+            android:id="@+id/buttonAnswer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#22222222"
+            android:text="저장"/>
     </LinearLayout>
 </ScrollView>
