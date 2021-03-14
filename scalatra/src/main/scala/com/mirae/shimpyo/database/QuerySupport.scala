@@ -120,7 +120,7 @@ trait QuerySupport {
                 prom.failure(e)
                 e.printStackTrace()
               }
-              case Success(count) => prom.complete(Try(Ok(Diary(no, dayOfYear, null, null))))
+              case Success(count) => prom.complete(Try(Ok(Diary(no, dayOfYear, Option(""), null))))
             }
           }
           case Some(x) => {
@@ -134,7 +134,7 @@ trait QuerySupport {
 //                    logger.info("sPhoto length : " + sPhoto.length)
                     prom.complete(Try(Ok(("no" -> diary.no) ~ ("dayOfYear" -> diary.dayOfYear) ~ ("answer" -> diary.answer.get) ~ ("photo" -> sPhoto))))
                   }
-                  case None => prom.complete(Try(Ok(Diary(no, dayOfYear, null, null))))
+                  case None => prom.complete(Try(Ok(Diary(no, dayOfYear, Option(""), null))))
                 }
               }
               case Failure(e) => {

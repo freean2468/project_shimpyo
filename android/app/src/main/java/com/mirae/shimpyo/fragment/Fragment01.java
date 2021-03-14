@@ -1,7 +1,6 @@
 package com.mirae.shimpyo.fragment;
 
-import android.app.Activity;
-import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -27,8 +26,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class Fragment01 extends Fragment {
-    private final int GET_GALLERY_IMAGE = 200;
-
     private View view;
     private String no;
     private int dayOfYear;
@@ -55,8 +52,6 @@ public class Fragment01 extends Fragment {
 
         EditText editTextAnswer = view.findViewById(R.id.editTextAnswer);
         Button buttonAnswer = view.findViewById(R.id.buttonAnswer);
-        TextView textViewDayOfYear = view.findViewById(R.id.textViewDayOfYear);
-        TextView textViewQuestion = view.findViewById(R.id.textViewQuestion);
 
         buttonAnswer.setOnClickListener((v) -> {
             ObjectVolley.getInstance(v.getContext()).requestAnswer(
@@ -79,35 +74,9 @@ public class Fragment01 extends Fragment {
         imageViewPhoto.setOnClickListener(v -> {
             FragmentDialogForPhoto dialog = new FragmentDialogForPhoto();
             dialog.show(getFragmentManager(), "photo");
-//            Intent intent = new Intent(Intent.ACTION_PICK);
-//            intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,"image/*");
-//            startActivityForResult(intent,GET_GALLERY_IMAGE);
         });
 
         return view;
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if(requestCode==GET_GALLERY_IMAGE && resultCode == Activity.RESULT_OK && data!=null && data.getData()!=null)
-        {
-            Uri selectedImage = data.getData();
-
-            imageViewPhoto.setImageURI(selectedImage);
-
-            InputStream iStream = null;
-            try {
-                iStream = getContext().getContentResolver().openInputStream(selectedImage);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-
-            try {
-                photo = Util.getBytes(iStream);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     public String getNo() {
@@ -137,5 +106,39 @@ public class Fragment01 extends Fragment {
         Log.d("debug", "photo length : " + photo.length);
         ImageView imageViewPhoto = view.findViewById(R.id.imageViewPhoto);
         imageViewPhoto.setImageBitmap(Util.byteArrayToBitmap(photo));
+    }
+
+    public void setPhoto(Uri selectedImage) {
+        ImageView imageViewPhoto = view.findViewById(R.id.imageViewPhoto);
+        imageViewPhoto.setImageURI(selectedImage);
+
+        InputStream iStream = null;
+        try {
+            iStream = getContext().getContentResolver().openInputStream(selectedImage);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            photo = Util.getBytes(iStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setPhoto() {
+        ImageView imageViewPhoto = view.findViewById(R.id.imageViewPhoto);
+        photo = new byte[]{};
+        imageViewPhoto.setImageBitmap(null);
+    }
+
+    public byte[] getPhoto() { return photo; }
+
+    public void saveImageToGallery(){
+        ImageView imageViewPhoto = view.findViewById(R.id.imageViewPhoto);
+        imageViewPhoto.setDrawingCacheEnabled(true);
+        Bitmap b = imageViewPhoto.getDrawingCache();
+        if (b == null) return;
+        MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), b, "shimpyo", "from shimpyo");
     }
 }
