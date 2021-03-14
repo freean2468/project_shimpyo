@@ -48,6 +48,7 @@ call proc_init();
 select * from `shimpyo`.`question_table`;
 select * from `shimpyo`.`diary_table`;
 select * from `shimpyo`.`account_table`;
+select length(photo) `shimpyo`.`ccount_table`;
 
 -- Slick에서 procedure 호출이 안 된다.
 drop procedure if exists `proc_login`;

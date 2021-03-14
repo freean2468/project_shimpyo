@@ -2,15 +2,19 @@ package com.mirae.shimpyo.database
 
 import com.mirae.shimpyo.Util
 import com.mirae.shimpyo.database.Tables.{Account, Diary, accounts, diaries}
-import org.scalatra.BadRequest
+import org.json4s.jackson.JsonMethods.{compact, render}
+import org.json4s.JsonDSL._
+
+import org.scalatra.{ActionResult, BadRequest, Ok, halt}
 import org.slf4j.LoggerFactory
 import slick.dbio.DBIO
 import slick.jdbc.JdbcBackend.Database
 
-import java.util.Calendar
 import scala.concurrent.Promise
 import scala.util.{Failure, Success, Try}
 import slick.jdbc.MySQLProfile.api._
+
+import java.nio.charset.StandardCharsets
 
 
 /** Tables의 모방 테이블을 활용한 쿼리문 지원하는 trait, Route class에 mixing in!
@@ -19,8 +23,6 @@ import slick.jdbc.MySQLProfile.api._
  */
 trait QuerySupport {
   import scala.concurrent.ExecutionContext.Implicits.global
-
-  val logger = LoggerFactory.getLogger(getClass)
 
   /** Create
    *
@@ -42,15 +44,37 @@ trait QuerySupport {
 
   def answer(db: Database, no: String, dayOfYear: Int, answer: String, photo: Array[Byte]) = {
     val prom = Promise[Int]()
+    val logger = LoggerFactory.getLogger(getClass)
+    logger.info("answer in QuerySupport")
     findDiary(db, no, dayOfYear) onComplete {
       case Failure(e) => {
+
+        logger.info("answer in QuerySupport failure")
         prom.failure(e)
         e.printStackTrace()
       }
       case Success(res) => {
         res match {
-          case Some(_) => updateDiary(db, Diary(no, dayOfYear, Option(answer), Option(photo)))
-          case None => insert(db, Diary(no, dayOfYear, Option(answer), Option(photo)))
+          case Some(_) => updateDiary(db, Diary(no, dayOfYear, Option(answer), Option(photo))) onComplete {
+            case Success(res2) => {
+              logger.info(s"answer in update success. res2 : ${res2}")
+              prom.complete(Try(res2))
+            }
+            case Failure(e) => {
+              prom.failure(e)
+              e.printStackTrace()
+            }
+          }
+          case None => insert(db, Diary(no, dayOfYear, Option(answer), Option(photo))) onComplete {
+            case Success(res2) => {
+              logger.info(s"answer in insert success. res2 : ${res2}")
+              prom.complete(Try(res2))
+            }
+            case Failure(e) => {
+              prom.failure(e)
+              e.printStackTrace()
+            }
+          }
         }
       }
     }
@@ -82,7 +106,7 @@ trait QuerySupport {
    * @return 비동기 diary record
    */
   def login(db: Database, no:String, dayOfYear:Int) = {
-    val prom = Promise[Diary]()
+    val prom = Promise[ActionResult]()
     findAccount(db, no) onComplete {
       case Failure(e) => {
         prom.failure(e)
@@ -96,15 +120,21 @@ trait QuerySupport {
                 prom.failure(e)
                 e.printStackTrace()
               }
-              case Success(count) => prom.complete(Try(Diary(no, dayOfYear, None, None)))
+              case Success(count) => prom.complete(Try(Ok(Diary(no, dayOfYear, null, null))))
             }
           }
           case Some(x) => {
             findDiary(db, no, dayOfYear) onComplete {
               case Success(r) => {
                 r match {
-                  case Some(diary) => prom.complete(Try(diary))
-                  case None => prom.complete(Try(Diary(no, dayOfYear, None, None)))
+                  case Some(diary) => {
+                    val logger = LoggerFactory.getLogger(getClass)
+//                    logger.info("byte Array photo length : " + diary.photo.get.length)
+                    val sPhoto = new String(diary.photo.get, StandardCharsets.UTF_8)
+//                    logger.info("sPhoto length : " + sPhoto.length)
+                    prom.complete(Try(Ok(("no" -> diary.no) ~ ("dayOfYear" -> diary.dayOfYear) ~ ("answer" -> diary.answer.get) ~ ("photo" -> sPhoto))))
+                  }
+                  case None => prom.complete(Try(Ok(Diary(no, dayOfYear, null, null))))
                 }
               }
               case Failure(e) => {
@@ -136,14 +166,14 @@ trait QuerySupport {
    *
    */
   def updateAccountPassword(db: Database, newA:Account) = {
-    val updateAction = (for {a <- accounts if a.no === newA.no} yield a.pw).update(newA.pw.getOrElse(null))
+    val updateAction = (for {a <- accounts if a.no === newA.no} yield a.pw).update(newA.pw.orNull)
     db.run(updateAction)
   }
 
   def updateDiary(db: Database, newD: Diary) = {
     val updateAction = (for {
       d <- diaries if d.no === newD.no && d.dayOfYear === newD.dayOfYear
-    } yield (d.answer, d.photo)).update((newD.answer.getOrElse(null), newD.photo.getOrElse(null)))
+    } yield (d.answer, d.photo)).update((newD.answer.orNull, newD.photo.get))
     db.run(updateAction)
   }
 

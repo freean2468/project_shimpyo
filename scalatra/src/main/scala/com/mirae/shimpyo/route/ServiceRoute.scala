@@ -1,9 +1,10 @@
 package com.mirae.shimpyo.route
 
-import com.mirae.shimpyo.database.{QuerySupport}
+import com.mirae.shimpyo.database.QuerySupport
 import org.json4s.{DefaultFormats, Formats}
 import org.scalatra.json.JacksonJsonSupport
 import org.scalatra.{AsyncResult, FutureSupport, ScalatraBase, ScalatraServlet}
+import org.slf4j.LoggerFactory
 import slick.jdbc.JdbcBackend.Database
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -32,7 +33,7 @@ trait ServiceRoute extends ScalatraBase with JacksonJsonSupport with FutureSuppo
          * dayOfYear가 서버와 다르면 차단하는 로직이 필요할까?
          * 고민해보자.
          */
-        login(db, params("no"), params("d").toInt)
+        login(db, params.getOrElse("no", halt(400)), params.getOrElse("d", halt(400)).toInt)
       }
     }
   }
@@ -41,7 +42,7 @@ trait ServiceRoute extends ScalatraBase with JacksonJsonSupport with FutureSuppo
     new AsyncResult { override val is =
       Future {
         contentType = formats("json")
-        calendar(db, params("no"), params("m").toInt)
+        calendar(db, params.getOrElse("no", halt(400)), params.getOrElse("m", halt(400)).toInt)
       }
     }
   }
@@ -50,10 +51,21 @@ trait ServiceRoute extends ScalatraBase with JacksonJsonSupport with FutureSuppo
    *  post
    */
   post("/answer/:id") {
+    val logger = LoggerFactory.getLogger(getClass)
+
     new AsyncResult { override val is =
       Future {
-        contentType = formats("json")
-        answer(db, params("no"), params("d").toInt, params("a"), params("p").getBytes)
+        contentType = ""
+        val paramAnswer = params.getOrElse("a", "")
+        val sPhoto = params.getOrElse("p", "")
+        val arrayBytePhoto = sPhoto.getBytes()
+        logger.info(s"sPhoto.length : ${sPhoto.length}")
+//        logger.info(s"sPhoto : ${sPhoto}")
+        logger.info(s"Array[byte] Photo.length : ${arrayBytePhoto.length}")
+        val no = params.getOrElse("no", halt(400))
+        val dayOfYear = params.getOrElse("d", halt(400)).toInt
+
+        answer(db, no, dayOfYear, paramAnswer, arrayBytePhoto)
       }
     }
   }

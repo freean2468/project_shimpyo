@@ -6,19 +6,23 @@ import android.util.Log;
 
 import androidx.collection.LruCache;
 
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.mirae.shimpyo.R;
 import com.mirae.shimpyo.util.Util;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 웹서버와 통신을 담당하는 Volley Manager class
@@ -61,20 +65,6 @@ public class ObjectVolley {
         hostNameForDevelopment = ctx.getString(R.string.host_name_for_development);
 
         hostName = hostNameForService;
-    }
-
-    /**
-     * 모든 회원 정보를 요청하는 테스트용 함수
-     * 서비스에는 부적합한 함수.
-     *
-     * @todo 없애자 이 함수.
-     * @param listener
-     * @param errorListener
-     */
-    public void requestAccountsAll(Response.Listener<JSONArray> listener, Response.ErrorListener errorListener) {
-        String url = hostName + ctx.getString(R.string.url_selectAll);
-        JsonArrayRequest request = new JsonArrayRequest(url, listener, errorListener);
-        addToRequestQueue(request);
     }
 
     public static synchronized ObjectVolley getInstance(Context context) {
@@ -150,7 +140,11 @@ public class ObjectVolley {
             }
             if (!response.isNull("photo")) {
                 try {
-                    photo = Util.stringToByteArray(response.getString("photo"));
+                    String sPhoto = response.getString("photo");
+//                    Log.d("debug", "photo string length : " + String.valueOf(sPhoto.length()));
+//                    Log.d("debug", "photo string : " + String.valueOf(sPhoto));
+                    photo = Util.stringToByteArray(sPhoto);
+//                    Log.d("debug", "photo byte[] length : " + String.valueOf(photo.length));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -172,24 +166,82 @@ public class ObjectVolley {
      * @param errorListener 실패 시 Listener
      */
     public void requestAnswer(String no, int dayOfYear, String answer, byte[] photo, RequestAnswerListener listener, Response.ErrorListener errorListener) {
-        String url = hostName + ctx.getString(R.string.url_answer) +
-                "no=" + no + "&d=" + dayOfYear + "&a=" + answer + "&p=" + Util.byteArrayToString(photo);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, null, listener, errorListener);
-        addToRequestQueue(request);
+        String url = hostName + ctx.getString(R.string.url_answer);
+        Map<String, String> params = new HashMap<String, String>();
+//        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(params), listener, errorListener);
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, listener, errorListener) {
+            @Override
+            protected Map<String, String> getParams()
+            {
+                Map<String, String>  params = new HashMap<String, String>();
+                params.put("no", no);
+                // volley will escape this for you
+                params.put("d", String.valueOf(dayOfYear));
+                params.put("a", answer);
+                String sPhoto = Util.byteArrayToString(photo);
+                Log.d("debug", "photo byte[] length : " + String.valueOf(photo.length));
+                Log.d("debug", "photo string length : " + String.valueOf(sPhoto.length()));
+//                Log.d("debug", "photo string : " + String.valueOf(sPhoto));
+                params.put("p", sPhoto);
+//                try {
+//                    params.put("p", URLEncoder.encode(Util.byteArrayToString(photo),"UTF-8"));
+//                } catch (UnsupportedEncodingException e) {
+//                    e.printStackTrace();
+//                }
+
+                return params;
+            }
+
+//            @Override
+//            public byte[] getBody() throws AuthFailureError {
+//                String httpPostBody="grant_type=password&username=Alice&password=password123";
+//                // usually you'd have a field with some values you'd want to escape, you need to do it yourself if overriding getBody. here's how you do it
+//                try {
+//                    httpPostBody="photo="+ URLEncoder.encode(Util.byteArrayToString(photo),"UTF-8");
+//                } catch (UnsupportedEncodingException exception) {
+//                    Log.e("ERROR", "exception", exception);
+//                    // return null and don't pass any POST string if you encounter encoding error
+//                    return null;
+//                }
+//                return httpPostBody.getBytes();
+//            }
+        };
+        addToRequestQueue(stringRequest);
+
     }
 
     /**
      * RequstAnswer 요청에 대한 응답 wrapper abstract class
      * jobToDo 내용만 구현하고, 필드가 null인지 아닌지만 확인해서 사용하면 된다.
      */
-    abstract public static class RequestAnswerListener implements Response.Listener<JSONObject> {
-
+    abstract public static class RequestAnswerListener implements Response.Listener<String> {
         @Override
-        public void onResponse(JSONObject response) {
-            Log.d(ctx.getString(R.string.tag_server), response.toString());
+        public void onResponse(String string) {
+            Log.d(ctx.getString(R.string.tag_server), string);
             jobToDo();
         }
 
         public abstract void jobToDo();
+    }
+
+    /**
+     *
+     */
+    abstract public static class StandardErrorListener implements Response.ErrorListener {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            Log.i(ctx.getString(R.string.tag_server), error.toString() + ", STATUS_CODE : " + volleyResponseStatusCode(error));
+        }
+
+        public static int volleyResponseStatusCode(VolleyError error)
+        {
+            NetworkResponse networkResponse = error.networkResponse;
+            if (networkResponse != null) {
+                return networkResponse.statusCode;
+            }
+            else{
+                return 0;
+            }
+        }
     }
 }

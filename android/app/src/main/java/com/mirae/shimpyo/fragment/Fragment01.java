@@ -20,6 +20,11 @@ import androidx.fragment.app.Fragment;
 
 import com.mirae.shimpyo.R;
 import com.mirae.shimpyo.object.ObjectVolley;
+import com.mirae.shimpyo.util.Util;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class Fragment01 extends Fragment {
     private final int GET_GALLERY_IMAGE = 200;
@@ -55,17 +60,17 @@ public class Fragment01 extends Fragment {
 
         buttonAnswer.setOnClickListener((v) -> {
             ObjectVolley.getInstance(v.getContext()).requestAnswer(
-                no,
-                dayOfYear,
-                editTextAnswer.getText().toString(),
-                photo,
-                new ObjectVolley.RequestAnswerListener() {
-                    @Override
-                    public void jobToDo() {
-                        Log.e(getString(R.string.tag_server), "응답 성공");
-                    }
-                },
-                error -> { Log.e(getString(R.string.tag_server), error.toString()); }
+                    no,
+                    dayOfYear,
+                    editTextAnswer.getText().toString(),
+                    photo,
+                    new ObjectVolley.RequestAnswerListener() {
+                        @Override
+                        public void jobToDo() {
+                            Log.e(getString(R.string.tag_server), "응답 성공");
+                        }
+                    },
+                    new ObjectVolley.StandardErrorListener(){}
             );
         });
 
@@ -84,8 +89,22 @@ public class Fragment01 extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if(requestCode==GET_GALLERY_IMAGE && resultCode == Activity.RESULT_OK && data!=null && data.getData()!=null)
         {
-            Uri selectImage = data.getData();
-            imageViewPhoto.setImageURI(selectImage);
+            Uri selectedImage = data.getData();
+
+            imageViewPhoto.setImageURI(selectedImage);
+
+            InputStream iStream = null;
+            try {
+                iStream = getContext().getContentResolver().openInputStream(selectedImage);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            try {
+                photo = Util.getBytes(iStream);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -113,5 +132,8 @@ public class Fragment01 extends Fragment {
 
     public void setPhoto(byte[] photo) {
         this.photo = photo;
+        Log.d("debug", "photo length : " + photo.length);
+        ImageView imageViewPhoto = view.findViewById(R.id.imageViewPhoto);
+        imageViewPhoto.setImageBitmap(Util.byteArrayToBitmap(photo));
     }
 }

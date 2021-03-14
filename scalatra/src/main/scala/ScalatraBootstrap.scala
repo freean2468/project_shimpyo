@@ -27,7 +27,6 @@ class ScalatraBootstrap extends LifeCycle{
     /** System.getenv를 통해 현재 서버가 local인지 ec2인지 구분한다.
      *  db 정보는 application.conf 파일에 따로 보관하며 이는 github을 통해 노출하지 않는다.
      */
-    val logger = LoggerFactory.getLogger(getClass)
     val isEb = System.getenv("IS_EB")
     val rdsMysql = ConfigFactory.parseResources("application.conf")
 
