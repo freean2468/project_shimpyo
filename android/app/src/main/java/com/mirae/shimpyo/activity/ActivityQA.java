@@ -35,10 +35,7 @@ public class ActivityQA extends ActivityNoSystemBar {
 
         ViewPager viewPager = findViewById(R.id.ViewPager);
         fragmentPagerAdapter = new AdapterViewPager(getSupportFragmentManager());
-
-        TabLayout tabLayout = findViewById(R.id.TabLayout);
         viewPager.setAdapter(fragmentPagerAdapter);
-        tabLayout.setupWithViewPager(viewPager);
 
         /**
          * ActivityLogin으로부터 회원번호를 받아 웹서버에 전달, 회원 정보를 가져온다.

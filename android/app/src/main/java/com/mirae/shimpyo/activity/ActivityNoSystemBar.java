@@ -6,6 +6,11 @@ import android.view.WindowManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+/**
+ * 상단 system bar를 숨기는 Activity
+ *
+ * @author 송훈일(freean2468@gmail.com)
+ */
 public class ActivityNoSystemBar extends AppCompatActivity {
     @Override
     protected void onResume() {

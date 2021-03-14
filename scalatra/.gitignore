@@ -75,3 +75,6 @@ project/metals.sbt
 
 # db conf
 src/main/resources/application.conf
+
+# intelli J project structure
+.idea

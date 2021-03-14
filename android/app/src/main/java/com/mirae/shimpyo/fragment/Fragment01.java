@@ -53,18 +53,12 @@ public class Fragment01 extends Fragment {
         TextView textViewDayOfYear = view.findViewById(R.id.textViewDayOfYear);
         TextView textViewQuestion = view.findViewById(R.id.textViewQuestion);
 
-        Log.d("debug", "textViewDayOfYear text : " + textViewDayOfYear.getText().toString() +
-                ", textViewQuestion text : " + textViewQuestion.getText().toString());
-
-
-        Log.d("debug", "fragment01 onCreateView no : " + no + ", dayOfYear : " + dayOfYear + ", answer : " + answer);
-
         buttonAnswer.setOnClickListener((v) -> {
             ObjectVolley.getInstance(v.getContext()).requestAnswer(
                 no,
                 dayOfYear,
                 editTextAnswer.getText().toString(),
-                this.photo,
+                photo,
                 new ObjectVolley.RequestAnswerListener() {
                     @Override
                     public void jobToDo() {
