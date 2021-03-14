@@ -77,9 +77,11 @@ public class Fragment01 extends Fragment {
         imageViewPhoto = view.findViewById(R.id.imageViewPhoto);
 
         imageViewPhoto.setOnClickListener(v -> {
-            Intent intent = new Intent(Intent.ACTION_PICK);
-            intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,"image/*");
-            startActivityForResult(intent,GET_GALLERY_IMAGE);
+            FragmentDialogForPhoto dialog = new FragmentDialogForPhoto();
+            dialog.show(getFragmentManager(), "photo");
+//            Intent intent = new Intent(Intent.ACTION_PICK);
+//            intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,"image/*");
+//            startActivityForResult(intent,GET_GALLERY_IMAGE);
         });
 
         return view;
