@@ -49,19 +49,39 @@
             android:hint="  당신의 하루는 >>"
             android:textColor="#776C6C" />
 
-        <ImageView
-            android:id="@+id/imageViewPhoto"
-            android:minHeight="200dp"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="10dp"
-            android:background="#66666666"/>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp">
+
+            <ImageView
+                android:id="@+id/imageViewPhoto"
+                android:minHeight="200dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#66666666"/>
+
+            <TextView
+                android:id="@+id/textViewHint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/imageViewPhoto"
+                android:layout_alignTop="@+id/imageViewPhoto"
+                android:layout_alignRight="@+id/imageViewPhoto"
+                android:layout_alignBottom="@+id/imageViewPhoto"
+                android:layout_margin="1dp"
+                android:gravity="center"
+                android:text="오늘 하루 남기고픈 사진"
+                android:textColor="#2A222222"/>
+        </RelativeLayout>
 
         <Button
             android:id="@+id/buttonAnswer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
             android:backgroundTint="#22222222"
             android:text="저장"/>
     </LinearLayout>

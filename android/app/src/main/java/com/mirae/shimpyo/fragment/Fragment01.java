@@ -105,11 +105,16 @@ public class Fragment01 extends Fragment {
         this.photo = photo;
         Log.d("debug", "photo length : " + photo.length);
         ImageView imageViewPhoto = view.findViewById(R.id.imageViewPhoto);
+        TextView textViewHint = view.findViewById(R.id.textViewHint);
+        textViewHint.setTextColor(getResources().getColor(R.color.transparent));
         imageViewPhoto.setImageBitmap(Util.byteArrayToBitmap(photo));
     }
 
     public void setPhoto(Uri selectedImage) {
         ImageView imageViewPhoto = view.findViewById(R.id.imageViewPhoto);
+        TextView textViewHint = view.findViewById(R.id.textViewHint);
+        textViewHint.setTextColor(getResources().getColor(R.color.transparent));
+
         imageViewPhoto.setImageURI(selectedImage);
 
         InputStream iStream = null;
@@ -128,7 +133,9 @@ public class Fragment01 extends Fragment {
 
     public void setPhoto() {
         ImageView imageViewPhoto = view.findViewById(R.id.imageViewPhoto);
+        TextView textViewHint = view.findViewById(R.id.textViewHint);
         photo = new byte[]{};
+        textViewHint.setTextColor(getResources().getColor(R.color.hint));
         imageViewPhoto.setImageBitmap(null);
     }
 
