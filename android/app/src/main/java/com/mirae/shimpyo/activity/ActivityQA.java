@@ -16,6 +16,7 @@ import java.util.Calendar;
  *
  *
  * @author 허선영
+ * 
  *
  */
 public class ActivityQA extends ActivityNoSystemBar {
