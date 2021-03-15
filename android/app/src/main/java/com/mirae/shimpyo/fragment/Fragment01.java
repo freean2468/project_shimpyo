@@ -36,7 +36,9 @@ public class Fragment01 extends Fragment {
 
     public static Fragment01 instance = null;
 
-    private Fragment01() { }
+    private Fragment01() {
+        this.photo = new byte[]{};
+    }
 
     public static Fragment01 getInstance(){
         if (instance == null) {
