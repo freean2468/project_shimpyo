@@ -45,6 +45,17 @@ public class FragmentDialogForPhoto extends DialogFragment {
             return flag;
         });
 
+        view.findViewById(R.id.buttonUpload).setOnTouchListener((v, e) -> {
+            boolean flag = false;
+            if(e.getAction() == MotionEvent.ACTION_UP){
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,"image/*");
+                startActivityForResult(intent,GET_GALLERY_IMAGE);
+                flag = true;
+            }
+            return flag;
+        });
+
         buttonDownload.setOnTouchListener((v, e) -> {
             boolean flag = false;
             if(e.getAction() == MotionEvent.ACTION_UP) {

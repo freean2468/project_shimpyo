@@ -141,10 +141,7 @@ public class ObjectVolley {
             if (!response.isNull("photo")) {
                 try {
                     String sPhoto = response.getString("photo");
-//                    Log.d("debug", "photo string length : " + String.valueOf(sPhoto.length()));
-//                    Log.d("debug", "photo string : " + String.valueOf(sPhoto));
                     photo = Util.stringToByteArray(sPhoto);
-//                    Log.d("debug", "photo byte[] length : " + String.valueOf(photo.length));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -168,43 +165,21 @@ public class ObjectVolley {
     public void requestAnswer(String no, int dayOfYear, String answer, byte[] photo, RequestAnswerListener listener, Response.ErrorListener errorListener) {
         String url = hostName + ctx.getString(R.string.url_answer);
         Map<String, String> params = new HashMap<String, String>();
-//        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(params), listener, errorListener);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, listener, errorListener) {
             @Override
             protected Map<String, String> getParams()
             {
                 Map<String, String>  params = new HashMap<String, String>();
                 params.put("no", no);
-                // volley will escape this for you
                 params.put("d", String.valueOf(dayOfYear));
                 params.put("a", answer);
                 String sPhoto = Util.byteArrayToString(photo);
                 Log.d("debug", "photo byte[] length : " + String.valueOf(photo.length));
                 Log.d("debug", "photo string length : " + String.valueOf(sPhoto.length()));
-//                Log.d("debug", "photo string : " + String.valueOf(sPhoto));
                 params.put("p", sPhoto);
-//                try {
-//                    params.put("p", URLEncoder.encode(Util.byteArrayToString(photo),"UTF-8"));
-//                } catch (UnsupportedEncodingException e) {
-//                    e.printStackTrace();
-//                }
 
                 return params;
             }
-
-//            @Override
-//            public byte[] getBody() throws AuthFailureError {
-//                String httpPostBody="grant_type=password&username=Alice&password=password123";
-//                // usually you'd have a field with some values you'd want to escape, you need to do it yourself if overriding getBody. here's how you do it
-//                try {
-//                    httpPostBody="photo="+ URLEncoder.encode(Util.byteArrayToString(photo),"UTF-8");
-//                } catch (UnsupportedEncodingException exception) {
-//                    Log.e("ERROR", "exception", exception);
-//                    // return null and don't pass any POST string if you encounter encoding error
-//                    return null;
-//                }
-//                return httpPostBody.getBytes();
-//            }
         };
         addToRequestQueue(stringRequest);
 

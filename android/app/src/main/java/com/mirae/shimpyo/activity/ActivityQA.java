@@ -1,13 +1,17 @@
 package com.mirae.shimpyo.activity;
 
+import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+
 import com.mirae.shimpyo.adapter.AdapterViewPager;
 import com.mirae.shimpyo.R;
 import com.mirae.shimpyo.fragment.Fragment01;
+
+import com.mirae.shimpyo.fragment.FragmentDialogForAssertion;
 import com.mirae.shimpyo.object.ObjectVolley;
 
 import java.util.Calendar;
@@ -41,8 +45,6 @@ public class ActivityQA extends ActivityNoSystemBar {
         no = intent.getStringExtra("no");
         int dayOfYear = Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
 
-        Log.i(getString(R.string.tag_server), "ActivityQA onCreate no : " + no);
-
         ObjectVolley objectVolley = ObjectVolley.getInstance(this);
 
         objectVolley.requestKakaoLogin(
@@ -57,7 +59,11 @@ public class ActivityQA extends ActivityNoSystemBar {
                     fragment01.setPhoto(this.photo);
                 }
             },
-            error -> { Log.e(getString(R.string.tag_server), "RequestLogin error"); }
+            error -> {
+                Log.e(getString(R.string.tag_server), "RequestLogin error");
+
+                (new FragmentDialogForAssertion()).show(getSupportFragmentManager(), "assertion");
+            }
         );
     }
 

@@ -62,8 +62,11 @@ public class ActivityLogin extends ActivityNoSystemBar {
                     Log.i("KAKAO_API", "사용자 아이디: " + result.getId());
 
                     /**
-                     * 성공했으니 회원번호를 가지고 다음 Activity인 ActivityQA로 이
+                     * 성공했으니 회원번호를 가지고 다음 Activity인 ActivityQA로 이동
+                     *
+                     * @author 송훈일(freean2468@gmail.com)
                      */
+
                     Intent intent = new Intent(getApplicationContext(), ActivityQA.class);
                     intent.putExtra("no", String.valueOf(result.getId()));
                     startActivity(intent);
