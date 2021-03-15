@@ -13,11 +13,11 @@ import com.mirae.shimpyo.R;
 import com.mirae.shimpyo.adapter.AdapterCalendar;
 
 public class HolderViewCalendar extends RecyclerView.ViewHolder implements View.OnClickListener {
-    public final TextView TextViewDayOfMonth;
+    public final TextView textViewDayOfMonth;
 
     public HolderViewCalendar(@NonNull View itemView) {
         super(itemView);
-        TextViewDayOfMonth = itemView.findViewById(R.id.TextViewCellDay);
+        textViewDayOfMonth = itemView.findViewById(R.id.textViewCellDay);
 
         itemView.setOnClickListener(this);
     }//end of CalendarViewHolder

@@ -2,12 +2,12 @@
     <!-- Base application theme. -->
     <style name="Theme.Shimpyo" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">#7CFDF4E4</item>
-        <item name="colorPrimaryVariant">#8B000000</item>
-        <item name="colorOnPrimary">#70A6A6A6</item>
+        <item name="colorPrimary">#7AFFF7C0</item>
+        <item name="colorPrimaryVariant">#44FF00</item>
+        <item name="colorOnPrimary">#0067FF</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">#D1FFFB</item>
-        <item name="colorSecondaryVariant">#EDFFED</item>
+        <item name="colorSecondary">#FFC005</item>
+        <item name="colorSecondaryVariant">#FF0000</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>

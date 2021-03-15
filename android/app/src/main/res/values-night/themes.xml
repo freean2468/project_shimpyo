@@ -2,7 +2,7 @@
     <!-- Base application theme. -->
     <style name="Theme.Shimpyo" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">#00FDF4E4</item>
+        <item name="colorPrimary">#7AFFF7C0</item>
         <item name="colorPrimaryVariant">@color/transparent</item>
         <item name="colorOnPrimary">#00FFFFFF</item>
         <!-- Secondary brand color. -->

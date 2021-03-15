@@ -10,4 +10,6 @@
 
     <color name="hint">#2A000000</color>
     <color name="transparent">#00000000</color>
+
+    <color name="base">#FFFFB1BD</color>
 </resources>

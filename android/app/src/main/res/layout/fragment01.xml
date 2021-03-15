@@ -2,7 +2,8 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/background">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -59,7 +60,7 @@
             <ImageView
                 android:padding="3dp"
                 android:id="@+id/imageViewPhoto"
-                android:minHeight="70dp"
+                android:minHeight="400dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 android:layout_marginLeft="30dp"
@@ -67,7 +68,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:scaleType="centerInside"
-                android:background="@drawable/frame"
+                android:background="@drawable/frame_photo"
                 android:adjustViewBounds="true"/>
 
             <TextView
@@ -90,9 +91,9 @@
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
             android:layout_marginBottom="10dp"
-            android:background="@drawable/frame"
-            android:fontFamily="@font/font"
             android:text="저장"
-            android:textColor="#FC555555"/>
+            android:textColor="#FC555555"
+            android:background="@drawable/frame"
+            android:fontFamily="@font/font"/>
     </LinearLayout>
 </ScrollView>

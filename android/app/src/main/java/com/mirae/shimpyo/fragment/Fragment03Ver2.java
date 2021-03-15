@@ -1,6 +1,7 @@
 package com.mirae.shimpyo.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,9 +24,9 @@ import java.util.ArrayList;
 
 public class Fragment03Ver2 extends Fragment {
     private View view;
-    private TextView TextViewMonthYear;
-    private RecyclerView RectclerViewCalendar;
-    private LocalDate LocalDateSelect;
+    private TextView textViewMonthYear;
+    private RecyclerView rectclerViewCalendar;
+    private LocalDate localDateSelect;
 
     public static Fragment03Ver2 instance = null;
 
@@ -49,26 +50,25 @@ public class Fragment03Ver2 extends Fragment {
         buttonNextMonth.setOnClickListener(v -> nextMouthAction(v));
 
         initWidgets();
-        LocalDateSelect = LocalDate.now();
+        localDateSelect = LocalDate.now();
         setMonthView();
 
         return view;
     }//end of onCreate
 
     private void initWidgets() {
-        RectclerViewCalendar = view.findViewById(R.id.RecyclerViewCalendar);
-        TextViewMonthYear = view.findViewById(R.id.TextViewMonthYear);
+        rectclerViewCalendar = view.findViewById(R.id.recyclerViewCalendar);
+        textViewMonthYear = view.findViewById(R.id.textViewMonthYear);
     }
 
     private void setMonthView() {
-        TextViewMonthYear.setText(monthYearFromDate(LocalDateSelect));
-        ArrayList<String> daysInMonth = dayInMonthArray(LocalDateSelect);
+        textViewMonthYear.setText(monthYearFromDate(localDateSelect));
+        ArrayList<String> daysInMonth = dayInMonthArray(localDateSelect);
 
         AdapterCalendar adapterCalendar = new AdapterCalendar(daysInMonth);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(view.getContext(), 7);
-        RectclerViewCalendar.setLayoutManager(layoutManager);
-        RectclerViewCalendar.setAdapter(adapterCalendar);
-
+        rectclerViewCalendar.setLayoutManager(layoutManager);
+        rectclerViewCalendar.setAdapter(adapterCalendar);
     }
 
     private ArrayList<String> dayInMonthArray(LocalDate date) {
@@ -77,7 +77,7 @@ public class Fragment03Ver2 extends Fragment {
 
         int daysInMonth = yearMonth.lengthOfMonth();
 
-        LocalDate firstOfMonth = LocalDateSelect.withDayOfMonth(1);
+        LocalDate firstOfMonth = localDateSelect.withDayOfMonth(1);
         int dayOfWeek = firstOfMonth.getDayOfWeek().getValue();
 
         for(int i = 1; i <=42 ;i++){
@@ -94,16 +94,15 @@ public class Fragment03Ver2 extends Fragment {
     private String monthYearFromDate(LocalDate date) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM YYYY");
         return date.format(formatter);
-
     }
 
     public void previousMouthAction(View view) {
-        LocalDateSelect = LocalDateSelect.minusMonths(1);
+        localDateSelect = localDateSelect.minusMonths(1);
         setMonthView();
     }
 
     public void nextMouthAction(View view) {
-        LocalDateSelect = LocalDateSelect.plusMonths(1);
+        localDateSelect = localDateSelect.plusMonths(1);
         setMonthView();
     }
 }//end of class
