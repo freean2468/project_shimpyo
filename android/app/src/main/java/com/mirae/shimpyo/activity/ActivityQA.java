@@ -65,11 +65,11 @@ public class ActivityQA extends ActivityNoSystemBar {
     /**
      * service 시 주석을 풀면 로그인화면이 아니라 Home 화면으로 나가게 해준다.
      */
-//    @Override
-//    public void onBackPressed() {
-//        Intent intent = new Intent(Intent.ACTION_MAIN);
-//        intent.addCategory(Intent.CATEGORY_HOME);
-//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//        startActivity(intent);
-//    }
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
 }

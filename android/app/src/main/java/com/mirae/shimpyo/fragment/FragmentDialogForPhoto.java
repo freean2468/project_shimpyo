@@ -30,6 +30,8 @@ public class FragmentDialogForPhoto extends DialogFragment {
         if (fragment01.getPhoto().length <= 0) {
             buttonDownload.setEnabled(false);
             buttonDelete.setEnabled(false);
+            buttonDownload.setTextColor(getResources().getColor(R.color.text_disabled));
+            buttonDelete.setTextColor(getResources().getColor(R.color.text_disabled));
         }
 
         view.findViewById(R.id.buttonUpload).setOnTouchListener((v, e) -> {

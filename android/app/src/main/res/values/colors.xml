@@ -12,4 +12,7 @@
     <color name="transparent">#00000000</color>
 
     <color name="base">#FFFFB1BD</color>
+
+    <color name="text_enabled">#FC555555</color>
+    <color name="text_disabled">#55555555</color>
 </resources>

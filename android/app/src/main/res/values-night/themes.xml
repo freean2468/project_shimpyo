@@ -1,6 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Theme.Shimpyo" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:windowFullscreen">true</item>
         <!-- Primary brand color. -->
         <item name="colorPrimary">#7AFFF7C0</item>
         <item name="colorPrimaryVariant">@color/transparent</item>
