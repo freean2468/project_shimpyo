@@ -14,4 +14,7 @@
     <string name="photo_new">새 사진</string>
     <string name="photo_download">내려받기</string>
     <string name="photo_delete">사진 삭제</string>
+
+    <string name="margin_view">20dp</string>
+    <string name="margin_background">10dp</string>
 </resources>

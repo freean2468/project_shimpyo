@@ -11,9 +11,11 @@
 
         <TextView
             android:id="@+id/textViewDayOfYear"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"
+            android:paddingTop="3dp"
+            android:paddingLeft="10dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="30dp"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_weight="1"
@@ -25,43 +27,47 @@
 
         <TextView
             android:id="@+id/textViewQuestion"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
+            android:paddingLeft="6dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:fontFamily="@font/font"
             android:gravity="top"
             android:text="오늘 하늘의 달은 어떤 모양인가요?"
             android:textColor="@color/black"
-            android:textSize="20dp" />
+            android:textSize="18dp" />
 
         <EditText
             android:id="@+id/editTextAnswer"
             android:layout_width="match_parent"
             android:minHeight="70dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:padding="10dp"
             android:fontFamily="@font/font"
             android:gravity="top"
             android:hint="  당신의 하루는 >>"
-            android:background="@drawable/frame"
-            android:textColor="#776C6C" />
+            android:textColor="#776C6C"
+            android:background="@drawable/frame"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp">
+            android:layout_height="wrap_content">
 
             <ImageView
-                android:padding="1dp"
+                android:padding="3dp"
                 android:id="@+id/imageViewPhoto"
                 android:minHeight="70dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/frame"
                 android:scaleType="centerInside"
+                android:background="@drawable/frame"
                 android:adjustViewBounds="true"/>
 
             <TextView
@@ -81,11 +87,12 @@
             android:id="@+id/buttonAnswer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
             android:layout_marginBottom="10dp"
             android:background="@drawable/frame"
-            android:backgroundTint="#000000"
-            android:text="저장"/>
+            android:fontFamily="@font/font"
+            android:text="저장"
+            android:textColor="#FC555555"/>
     </LinearLayout>
 </ScrollView>
