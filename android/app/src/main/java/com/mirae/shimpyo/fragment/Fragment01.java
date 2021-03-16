@@ -65,6 +65,10 @@ public class Fragment01 extends Fragment {
         imageViewPhoto = view.findViewById(R.id.imageViewPhoto);
 
         setPhoto(photo);
+        imageViewPhoto.setOnTouchListener((v, e) -> {
+            Util.hideSoftKeyboard(getActivity());
+            return false;
+        });
 
         WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
@@ -103,6 +107,13 @@ public class Fragment01 extends Fragment {
         });
 
         return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        setupUI(getActivity(), view.findViewById(R.id.scrollView));
     }
 
     public String getNo() {
@@ -200,7 +211,8 @@ public class Fragment01 extends Fragment {
         if (view instanceof ViewGroup) {
             for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
                 View innerView = ((ViewGroup) view).getChildAt(i);
-                setupUI(activity, innerView);
+                // 여기서 에러가 난다.
+//                setupUI(activity, innerView);
             }
         }
     }
