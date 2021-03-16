@@ -43,7 +43,7 @@ trait QuerySupport {
   }
 
   def answer(db: Database, no: String, dayOfYear: Int, answer: String, photo: Array[Byte]) = {
-    val prom = Promise[Int]()
+    val prom = Promise[ActionResult]()
     val logger = LoggerFactory.getLogger(getClass)
     logger.info("answer in QuerySupport")
     findDiary(db, no, dayOfYear) onComplete {
@@ -58,7 +58,7 @@ trait QuerySupport {
           case Some(_) => updateDiary(db, Diary(no, dayOfYear, Option(answer), Option(photo))) onComplete {
             case Success(res2) => {
               logger.info(s"answer in update success. res2 : ${res2}")
-              prom.complete(Try(res2))
+              prom.complete(Try(Ok(res2)))
             }
             case Failure(e) => {
               prom.failure(e)
@@ -68,7 +68,7 @@ trait QuerySupport {
           case None => insert(db, Diary(no, dayOfYear, Option(answer), Option(photo))) onComplete {
             case Success(res2) => {
               logger.info(s"answer in insert success. res2 : ${res2}")
-              prom.complete(Try(res2))
+              prom.complete(Try(Ok(res2)))
             }
             case Failure(e) => {
               prom.failure(e)

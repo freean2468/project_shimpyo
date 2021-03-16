@@ -17,4 +17,10 @@
 
     <string name="margin_view">20dp</string>
     <string name="margin_background">10dp</string>
+
+    <string name="save_ok">일기가 저장되었따!</string>
+    <string name="save_failure">일기 저장 오류가 발생해 부럿따...</string>
+
+    <string name="login_ok">접속에 성공했따!</string>
+    <string name="login_failure">접속에 오류가 발생해 부럿따...</string>
 </resources>

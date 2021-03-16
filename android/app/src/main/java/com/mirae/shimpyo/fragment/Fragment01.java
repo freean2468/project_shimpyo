@@ -4,6 +4,8 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -52,24 +55,14 @@ public class Fragment01 extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment01, container, false);
 
-        TextView textViewQuestion = view.findViewById(R.id.textViewQuestion);
         EditText editTextAnswer = view.findViewById(R.id.editTextAnswer);
+        editTextAnswer.setText(this.answer);
+        setPhoto(photo);
         Button buttonAnswer = view.findViewById(R.id.buttonAnswer);
 
         buttonAnswer.setOnClickListener((v) -> {
-            ObjectVolley.getInstance(v.getContext()).requestAnswer(
-                    no,
-                    dayOfYear,
-                    editTextAnswer.getText().toString(),
-                    photo,
-                    new ObjectVolley.RequestAnswerListener() {
-                        @Override
-                        public void jobToDo() {
-                            Log.e(getString(R.string.tag_server), "응답 성공");
-                        }
-                    },
-                    new ObjectVolley.StandardErrorListener(){}
-            );
+            FragmentDialogForSave fragmentDialogForSave = new FragmentDialogForSave();
+            fragmentDialogForSave.show(getFragmentManager(), "save");
         });
 
         imageViewPhoto = view.findViewById(R.id.imageViewPhoto);
@@ -79,12 +72,32 @@ public class Fragment01 extends Fragment {
             dialog.show(getFragmentManager(), "photo");
         });
 
+        editTextAnswer.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                setAnswer(editTextAnswer.getText().toString());
+            }
+        });
+
         return view;
     }
 
     public String getNo() {
         return no;
     }
+    public byte[] getPhoto() { return photo; }
+    public String getAnswer() { return answer; }
+    public int getDayOfYear() { return dayOfYear; }
 
     public void setNo(String no) {
         this.no = no;
@@ -104,15 +117,11 @@ public class Fragment01 extends Fragment {
 
     public void setAnswer(String answer) {
         this.answer = answer;
-        if (view != null) {
-            EditText editTextAnswer = view.findViewById(R.id.editTextAnswer);
-            editTextAnswer.setText(this.answer);
-        }
     }
 
     public void setPhoto(byte[] photo) {
         this.photo = photo;
-        if (view != null) {
+        if (view != null && photo.length > 0) {
             Log.d("debug", "photo length : " + photo.length);
             ImageView imageViewPhoto = view.findViewById(R.id.imageViewPhoto);
             TextView textViewHint = view.findViewById(R.id.textViewHint);
@@ -153,8 +162,6 @@ public class Fragment01 extends Fragment {
             imageViewPhoto.setImageBitmap(null);
         }
     }
-
-    public byte[] getPhoto() { return photo; }
 
     public void saveImageToGallery(){
         ImageView imageViewPhoto = view.findViewById(R.id.imageViewPhoto);

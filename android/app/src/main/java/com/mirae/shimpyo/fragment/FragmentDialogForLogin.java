@@ -31,7 +31,7 @@ public class FragmentDialogForLogin extends DialogFragment {
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         LayoutInflater inflater = requireActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.fragment_dialog_for_login, null);
+        View view = inflater.inflate(R.layout.fragment_dialog_for_progress, null);
 
         TextView textViewProgress = view.findViewById(R.id.textView);
         textViewProgress.setText("서버 접속 중");
@@ -49,7 +49,8 @@ public class FragmentDialogForLogin extends DialogFragment {
                 Calendar.getInstance().get(Calendar.DAY_OF_YEAR),
                 new ObjectVolley.RequestLoginListener() {
                     @Override public void jobToDo() {
-                        textViewProgress.setText("서버 접속 완료");
+                        progressBar.setVisibility(View.GONE);
+                        textViewProgress.setText(getString(R.string.login_ok));
                         Fragment01 fragment01 = Fragment01.getInstance();
                         fragment01.setNo(this.no);
                         fragment01.setDayOfYear(this.dayOfYear);
@@ -64,7 +65,7 @@ public class FragmentDialogForLogin extends DialogFragment {
                 error -> {
                     Log.e(getString(R.string.tag_server), "RequestLogin error");
                     progressBar.setVisibility(View.GONE);
-                    textViewProgress.setText("서버 접속 실패");
+                    textViewProgress.setText(getString(R.string.login_failure));
                 }
         );
 

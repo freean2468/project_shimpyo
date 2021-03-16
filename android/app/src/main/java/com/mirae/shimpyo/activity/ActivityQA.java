@@ -32,9 +32,10 @@ public class ActivityQA extends ActivityNoSystemBar {
         no = intent.getStringExtra("no");
     }
 
-
     /**
      * service 시 주석을 풀면 로그인화면이 아니라 Home 화면으로 나가게 해준다.
+     *
+     * @author 송훈일(freean2468@gmail.com)
      */
     @Override
     public void onBackPressed() {

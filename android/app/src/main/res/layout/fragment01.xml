@@ -2,13 +2,14 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/background">
+    android:layout_height="match_parent">
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@drawable/background">
 
         <TextView
             android:id="@+id/textViewDayOfYear"
@@ -55,7 +56,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
             <ImageView
                 android:padding="3dp"
@@ -93,7 +94,7 @@
             android:layout_marginBottom="10dp"
             android:text="저장"
             android:textColor="@color/text_enabled"
-            android:background="@drawable/frame"
+            android:background="@drawable/frame_button"
             android:fontFamily="@font/font"/>
 
         <Button
@@ -102,11 +103,11 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="40dp"
             android:enabled="false"
             android:text="일기장 주문"
             android:textColor="@color/text_disabled"
-            android:background="@drawable/frame"
+            android:background="@drawable/frame_button"
             android:fontFamily="@font/font"/>
     </LinearLayout>
 </ScrollView>

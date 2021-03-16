@@ -201,12 +201,15 @@ public class ObjectVolley {
     }
 
     /**
+     *  에러 시 서버 응답 코드를 자동으로 알려주는 class
      *
+     * @author 송훈일(freean2468@gmail.com)
      */
     abstract public static class StandardErrorListener implements Response.ErrorListener {
         @Override
         public void onErrorResponse(VolleyError error) {
             Log.i(ctx.getString(R.string.tag_server), error.toString() + ", STATUS_CODE : " + volleyResponseStatusCode(error));
+            jobToDo();
         }
 
         public static int volleyResponseStatusCode(VolleyError error)
@@ -219,5 +222,7 @@ public class ObjectVolley {
                 return 0;
             }
         }
+
+        public abstract void jobToDo();
     }
 }
