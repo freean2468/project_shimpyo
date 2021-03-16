@@ -1,15 +1,20 @@
 package com.mirae.shimpyo.fragment;
 
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -57,15 +62,24 @@ public class Fragment01 extends Fragment {
 
         EditText editTextAnswer = view.findViewById(R.id.editTextAnswer);
         editTextAnswer.setText(this.answer);
-        setPhoto(photo);
         Button buttonAnswer = view.findViewById(R.id.buttonAnswer);
+        imageViewPhoto = view.findViewById(R.id.imageViewPhoto);
+
+        setPhoto(photo);
+
+        WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int height = size.y;
+
+        imageViewPhoto.setMinimumHeight((int)(height*0.35));
+        editTextAnswer.setMinimumHeight((int)(height*0.25));
 
         buttonAnswer.setOnClickListener((v) -> {
             FragmentDialogForSave fragmentDialogForSave = new FragmentDialogForSave();
             fragmentDialogForSave.show(getFragmentManager(), "save");
         });
-
-        imageViewPhoto = view.findViewById(R.id.imageViewPhoto);
 
         imageViewPhoto.setOnClickListener(v -> {
             FragmentDialogForPhoto dialog = new FragmentDialogForPhoto();

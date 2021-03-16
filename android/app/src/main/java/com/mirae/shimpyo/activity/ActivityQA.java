@@ -4,6 +4,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 
 import com.mirae.shimpyo.adapter.AdapterViewPager;
 import com.mirae.shimpyo.R;
