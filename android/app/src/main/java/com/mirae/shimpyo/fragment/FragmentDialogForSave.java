@@ -55,6 +55,7 @@ public class FragmentDialogForSave extends DialogFragment {
                     public void jobToDo() {
                         progressBar.setVisibility(View.GONE);
                         textViewProgress.setText(getString(R.string.save_ok));
+                        textViewProgress.setVisibility(View.VISIBLE);
                     }
                 },
                 new ObjectVolley.StandardErrorListener(){
@@ -62,6 +63,7 @@ public class FragmentDialogForSave extends DialogFragment {
                     public void jobToDo() {
                         progressBar.setVisibility(View.GONE);
                         textViewProgress.setText(getString(R.string.save_failure));
+                        textViewProgress.setVisibility(View.VISIBLE);
                     }
                 }
         );

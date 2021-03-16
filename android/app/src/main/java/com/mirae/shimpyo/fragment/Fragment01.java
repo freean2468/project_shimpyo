@@ -74,7 +74,7 @@ public class Fragment01 extends Fragment {
         int height = size.y;
 
         imageViewPhoto.setMinimumHeight((int)(height*0.35));
-        editTextAnswer.setMinimumHeight((int)(height*0.25));
+        editTextAnswer.setMinimumHeight((int)(height*0.3));
 
         buttonAnswer.setOnClickListener((v) -> {
             FragmentDialogForSave fragmentDialogForSave = new FragmentDialogForSave();

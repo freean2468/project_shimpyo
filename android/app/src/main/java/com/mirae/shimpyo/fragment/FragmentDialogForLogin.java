@@ -51,6 +51,7 @@ public class FragmentDialogForLogin extends DialogFragment {
                     @Override public void jobToDo() {
                         progressBar.setVisibility(View.GONE);
                         textViewProgress.setText(getString(R.string.login_ok));
+                        textViewProgress.setVisibility(View.VISIBLE);
                         Fragment01 fragment01 = Fragment01.getInstance();
                         fragment01.setNo(this.no);
                         fragment01.setDayOfYear(this.dayOfYear);
@@ -66,6 +67,7 @@ public class FragmentDialogForLogin extends DialogFragment {
                     Log.e(getString(R.string.tag_server), "RequestLogin error");
                     progressBar.setVisibility(View.GONE);
                     textViewProgress.setText(getString(R.string.login_failure));
+                    textViewProgress.setVisibility(View.VISIBLE);
                 }
         );
 
