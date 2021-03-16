@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fontFamily="@font/font"
-            android:text="물오름달 스물이드레 흙날"
+            android:text="3월 27일 토요일"
             android:textSize="16dp" />
 
         <ImageView
