@@ -17,6 +17,7 @@ import com.kakao.usermgmt.callback.MeV2ResponseCallback;
 import com.kakao.usermgmt.response.MeV2Response;
 import com.kakao.util.exception.KakaoException;
 import com.mirae.shimpyo.R;
+import com.mirae.shimpyo.fragment.FragmentDialogForLogin;
 import com.mirae.shimpyo.object.ObjectVolley;
 
 import static com.kakao.util.helper.Utility.getKeyHash;
@@ -66,11 +67,8 @@ public class ActivityLogin extends ActivityNoSystemBar {
                      *
                      * @author 송훈일(freean2468@gmail.com)
                      */
-
-                    Intent intent = new Intent(getApplicationContext(), ActivityQA.class);
-                    intent.putExtra("no", String.valueOf(result.getId()));
-                    startActivity(intent);
-
+                    FragmentDialogForLogin fragmentDialogForLogin = new FragmentDialogForLogin(String.valueOf(result.getId()));
+                    fragmentDialogForLogin.show(getSupportFragmentManager(), "login");
 
 //                    UserAccount kakaoAccount = result.getKakaoAccount();
 //                    if (kakaoAccount != null) {

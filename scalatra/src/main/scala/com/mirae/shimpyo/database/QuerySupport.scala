@@ -106,6 +106,8 @@ trait QuerySupport {
    * @return 비동기 diary record
    */
   def login(db: Database, no:String, dayOfYear:Int) = {
+    val logger = LoggerFactory.getLogger(getClass)
+    logger.info(s"no : ${no}, dayOfYear : ${dayOfYear}")
     val prom = Promise[ActionResult]()
     findAccount(db, no) onComplete {
       case Failure(e) => {

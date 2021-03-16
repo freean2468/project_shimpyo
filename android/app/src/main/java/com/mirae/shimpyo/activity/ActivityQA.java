@@ -1,20 +1,12 @@
 package com.mirae.shimpyo.activity;
 
-import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.mirae.shimpyo.adapter.AdapterViewPager;
 import com.mirae.shimpyo.R;
-import com.mirae.shimpyo.fragment.Fragment01;
-
-import com.mirae.shimpyo.fragment.FragmentDialogForAssertion;
-import com.mirae.shimpyo.object.ObjectVolley;
-
-import java.util.Calendar;
 
 /**
  *
@@ -36,35 +28,8 @@ public class ActivityQA extends ActivityNoSystemBar {
         fragmentPagerAdapter = new AdapterViewPager(getSupportFragmentManager());
         viewPager.setAdapter(fragmentPagerAdapter);
 
-        /**
-         * ActivityLogin으로부터 회원번호를 받아 웹서버에 전달, 회원 정보를 가져온다.
-         *
-         * @author 송훈일(freean2468@gmail.com)
-         */
         Intent intent = getIntent();
         no = intent.getStringExtra("no");
-        int dayOfYear = Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
-
-        ObjectVolley objectVolley = ObjectVolley.getInstance(this);
-
-        objectVolley.requestKakaoLogin(
-            no,
-            dayOfYear,
-            new ObjectVolley.RequestLoginListener() {
-                @Override public void jobToDo() {
-                    Fragment01 fragment01 = Fragment01.getInstance();
-                    fragment01.setNo(this.no);
-                    fragment01.setDayOfYear(this.dayOfYear);
-                    fragment01.setAnswer(this.answer);
-                    fragment01.setPhoto(this.photo);
-                }
-            },
-            error -> {
-                Log.e(getString(R.string.tag_server), "RequestLogin error");
-
-                (new FragmentDialogForAssertion()).show(getSupportFragmentManager(), "assertion");
-            }
-        );
     }
 
 

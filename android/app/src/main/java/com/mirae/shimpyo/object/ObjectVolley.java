@@ -146,6 +146,7 @@ public class ObjectVolley {
                     e.printStackTrace();
                 }
             }
+//            Log.d("debug", "no : " + no + ", dayOfYear : " + dayOfYear + ", answer : " + answer + ", photo : " + photo);
             jobToDo();
         }
 
@@ -174,8 +175,8 @@ public class ObjectVolley {
                 params.put("d", String.valueOf(dayOfYear));
                 params.put("a", answer);
                 String sPhoto = Util.byteArrayToString(photo);
-                Log.d("debug", "photo byte[] length : " + String.valueOf(photo.length));
-                Log.d("debug", "photo string length : " + String.valueOf(sPhoto.length()));
+//                Log.d("debug", "photo byte[] length : " + String.valueOf(photo.length));
+//                Log.d("debug", "photo string length : " + String.valueOf(sPhoto.length()));
                 params.put("p", sPhoto);
 
                 return params;

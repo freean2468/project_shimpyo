@@ -34,7 +34,7 @@ public class Fragment01 extends Fragment {
 
     private ImageView imageViewPhoto;
 
-    public static Fragment01 instance = null;
+    private static Fragment01 instance = null;
 
     private Fragment01() {
         this.photo = new byte[]{};
@@ -52,6 +52,7 @@ public class Fragment01 extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment01, container, false);
 
+        TextView textViewQuestion = view.findViewById(R.id.textViewQuestion);
         EditText editTextAnswer = view.findViewById(R.id.editTextAnswer);
         Button buttonAnswer = view.findViewById(R.id.buttonAnswer);
 
@@ -87,35 +88,45 @@ public class Fragment01 extends Fragment {
 
     public void setNo(String no) {
         this.no = no;
-        TextView textViewQuestion = view.findViewById(R.id.textViewQuestion);
-        textViewQuestion.setText(this.no + "님 " + textViewQuestion.getText());
+        if (view != null) {
+            TextView textViewQuestion = view.findViewById(R.id.textViewQuestion);
+            textViewQuestion.setText(this.no + "님 " + textViewQuestion.getText());
+        }
     }
 
     public void setDayOfYear(int dayOfYear) {
         this.dayOfYear = dayOfYear;
-        TextView textViewDayOfYear = view.findViewById(R.id.textViewDayOfYear);
-        textViewDayOfYear.setText(textViewDayOfYear.getText().toString() + "(" + String.valueOf(this.dayOfYear) + ")");
+        if (view != null) {
+            TextView textViewDayOfYear = view.findViewById(R.id.textViewDayOfYear);
+            textViewDayOfYear.setText(textViewDayOfYear.getText().toString() + "(" + String.valueOf(this.dayOfYear) + ")");
+        }
     }
 
     public void setAnswer(String answer) {
         this.answer = answer;
-        EditText editTextAnswer = view.findViewById(R.id.editTextAnswer);
-        editTextAnswer.setText(this.answer);
+        if (view != null) {
+            EditText editTextAnswer = view.findViewById(R.id.editTextAnswer);
+            editTextAnswer.setText(this.answer);
+        }
     }
 
     public void setPhoto(byte[] photo) {
         this.photo = photo;
-        Log.d("debug", "photo length : " + photo.length);
-        ImageView imageViewPhoto = view.findViewById(R.id.imageViewPhoto);
-        TextView textViewHint = view.findViewById(R.id.textViewHint);
-        textViewHint.setTextColor(getResources().getColor(R.color.transparent));
-        imageViewPhoto.setImageBitmap(Util.byteArrayToBitmap(photo));
+        if (view != null) {
+            Log.d("debug", "photo length : " + photo.length);
+            ImageView imageViewPhoto = view.findViewById(R.id.imageViewPhoto);
+            TextView textViewHint = view.findViewById(R.id.textViewHint);
+            textViewHint.setTextColor(getResources().getColor(R.color.transparent));
+            imageViewPhoto.setImageBitmap(Util.byteArrayToBitmap(photo));
+        }
     }
 
     public void setPhoto(Uri selectedImage) {
-        ImageView imageViewPhoto = view.findViewById(R.id.imageViewPhoto);
-        TextView textViewHint = view.findViewById(R.id.textViewHint);
-        textViewHint.setTextColor(getResources().getColor(R.color.transparent));
+        if (view != null) {
+            ImageView imageViewPhoto = view.findViewById(R.id.imageViewPhoto);
+            TextView textViewHint = view.findViewById(R.id.textViewHint);
+            textViewHint.setTextColor(getResources().getColor(R.color.transparent));
+        }
 
         imageViewPhoto.setImageURI(selectedImage);
 
@@ -134,11 +145,13 @@ public class Fragment01 extends Fragment {
     }
 
     public void setPhoto() {
-        ImageView imageViewPhoto = view.findViewById(R.id.imageViewPhoto);
-        TextView textViewHint = view.findViewById(R.id.textViewHint);
         photo = new byte[]{};
-        textViewHint.setTextColor(getResources().getColor(R.color.hint));
-        imageViewPhoto.setImageBitmap(null);
+        if (view != null) {
+            ImageView imageViewPhoto = view.findViewById(R.id.imageViewPhoto);
+            TextView textViewHint = view.findViewById(R.id.textViewHint);
+            textViewHint.setTextColor(getResources().getColor(R.color.hint));
+            imageViewPhoto.setImageBitmap(null);
+        }
     }
 
     public byte[] getPhoto() { return photo; }

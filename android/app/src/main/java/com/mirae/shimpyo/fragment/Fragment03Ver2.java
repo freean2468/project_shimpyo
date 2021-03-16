@@ -28,7 +28,7 @@ public class Fragment03Ver2 extends Fragment {
     private RecyclerView rectclerViewCalendar;
     private LocalDate localDateSelect;
 
-    public static Fragment03Ver2 instance = null;
+    private static Fragment03Ver2 instance = null;
 
     private Fragment03Ver2() { }
 
