@@ -54,7 +54,7 @@ public class Fragment03Ver2 extends Fragment {
         //초기화하는 함수
         initWidgets();
         //localDate를 지금으로 설정
-        LocalDateSelect = LocalDate.now();
+        localDateSelect = LocalDate.now();
         setMonthView();
 
         return view;
