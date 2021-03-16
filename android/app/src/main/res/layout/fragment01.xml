@@ -4,110 +4,124 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/linearLayout"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="@drawable/background">
-
-        <TextView
-            android:id="@+id/textViewDayOfYear"
-            android:paddingTop="3dp"
-            android:paddingLeft="10dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:layout_marginTop="30dp"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:id="@+id/linearLayout"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:layout_marginBottom="5dp"
-            android:fontFamily="@font/font"
-            android:gravity="bottom"
-            android:text="물오름달 스물이드레 흙날"
-            android:textSize="15dp" />
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="@drawable/background_left">
 
-        <TextView
-            android:id="@+id/textViewQuestion"
-            android:paddingLeft="6dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:fontFamily="@font/font"
-            android:gravity="top"
-            android:text="오늘 하늘의 달은 어떤 모양인가요?"
-            android:textColor="@color/black"
-            android:textSize="18dp" />
+            <TextView
+                android:id="@+id/textViewDayOfYear"
+                android:paddingTop="3dp"
+                android:paddingLeft="10dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginTop="30dp"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:layout_marginBottom="5dp"
+                android:fontFamily="@font/font"
+                android:gravity="bottom"
+                android:text="물오름달 스물이드레 흙날"
+                android:textSize="15dp" />
 
-        <EditText
-            android:id="@+id/editTextAnswer"
-            android:layout_width="match_parent"
-            android:minHeight="200dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:padding="10dp"
-            android:fontFamily="@font/font"
-            android:gravity="top"
-            android:hint="  당신의 하루는 >>"
-            android:textColor="#776C6C"
-            android:background="@drawable/frame"/>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <ImageView
-                android:padding="3dp"
-                android:id="@+id/imageViewPhoto"
-                android:minHeight="400dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
+            <TextView
+                android:id="@+id/textViewQuestion"
+                android:paddingLeft="6dp"
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="30dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scaleType="centerInside"
-                android:background="@drawable/frame_photo"
-                android:adjustViewBounds="true"/>
+                android:layout_height="50dp"
+                android:fontFamily="@font/font"
+                android:gravity="top"
+                android:text="오늘 하늘의 달은 어떤 모양인가요?"
+                android:textColor="@color/black"
+                android:textSize="18dp" />
 
+            <EditText
+                android:id="@+id/editTextAnswer"
+                android:layout_width="match_parent"
+                android:minHeight="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:padding="10dp"
+                android:fontFamily="@font/font"
+                android:gravity="top"
+                android:hint="  당신의 하루는 >>"
+                android:textColor="#776C6C"
+                android:background="@drawable/frame"/>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/imageViewPhoto"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="30dp"
+                    android:layout_marginBottom="10dp"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/frame_photo"
+                    android:minHeight="100dp"
+                    android:padding="3dp"
+                    android:scaleType="centerInside" />
+
+                <TextView
+                    android:id="@+id/textViewHint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/imageViewPhoto"
+                    android:layout_alignTop="@+id/imageViewPhoto"
+                    android:layout_alignRight="@+id/imageViewPhoto"
+                    android:layout_alignBottom="@+id/imageViewPhoto"
+                    android:layout_margin="1dp"
+                    android:gravity="center"
+                    android:text="오늘 하루 남기고픈 사진" />
+            </RelativeLayout>
+
+            <Button
+                android:id="@+id/buttonAnswer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/frame_button"
+                android:fontFamily="@font/font"
+                android:text="저장"
+                android:textColor="@color/text_enabled" />
+
+            <Button
+                android:id="@+id/buttonOrder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginBottom="40dp"
+                android:background="@drawable/frame_button"
+                android:enabled="false"
+                android:fontFamily="@font/font"
+                android:text="일기장 주문"
+                android:textColor="@color/text_disabled" />
+        </LinearLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
             <TextView
-                android:id="@+id/textViewHint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/imageViewPhoto"
-                android:layout_alignTop="@+id/imageViewPhoto"
-                android:layout_alignRight="@+id/imageViewPhoto"
-                android:layout_alignBottom="@+id/imageViewPhoto"
-                android:layout_margin="1dp"
-                android:gravity="center"
-                android:text="오늘 하루 남기고픈 사진"/>
+                android:text="&gt;&gt; "
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:textColor="@color/base"/>
         </RelativeLayout>
-
-        <Button
-            android:id="@+id/buttonAnswer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:layout_marginBottom="10dp"
-            android:text="저장"
-            android:textColor="@color/text_enabled"
-            android:background="@drawable/frame_button"
-            android:fontFamily="@font/font"/>
-
-        <Button
-            android:id="@+id/buttonOrder"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:layout_marginBottom="40dp"
-            android:enabled="false"
-            android:text="일기장 주문"
-            android:textColor="@color/text_disabled"
-            android:background="@drawable/frame_button"
-            android:fontFamily="@font/font"/>
-    </LinearLayout>
+    </FrameLayout>
 </ScrollView>
