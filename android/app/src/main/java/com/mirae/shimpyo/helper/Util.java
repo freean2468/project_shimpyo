@@ -1,4 +1,4 @@
-package com.mirae.shimpyo.util;
+package com.mirae.shimpyo.helper;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
@@ -36,7 +36,8 @@ public class Util {
         InputMethodManager inputMethodManager =
                 (InputMethodManager) activity.getSystemService(
                         Activity.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(
+        if (activity.getCurrentFocus() != null)
+            inputMethodManager.hideSoftInputFromWindow(
                 activity.getCurrentFocus().getWindowToken(), 0);
     }
 }

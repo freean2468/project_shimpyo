@@ -26,7 +26,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.mirae.shimpyo.R;
-import com.mirae.shimpyo.util.Util;
+import com.mirae.shimpyo.helper.Util;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

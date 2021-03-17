@@ -16,7 +16,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.mirae.shimpyo.R;
-import com.mirae.shimpyo.util.Util;
+import com.mirae.shimpyo.helper.Util;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -194,6 +194,50 @@ public class ObjectVolley {
         @Override
         public void onResponse(String string) {
             Log.d(ctx.getString(R.string.tag_server), string);
+            jobToDo();
+        }
+
+        public abstract void jobToDo();
+    }
+
+    /**
+     * 하루 일기 정보를 서버에 요청
+     *
+     * @param no 유저 회원 번호
+     * @param dayOfYear 정보를 요청하는 달
+     * @param listener
+     * @param errorListener
+     */
+    public void requestDiary(String no, int dayOfYear, RequestDiaryListener listener, StandardErrorListener errorListener) {
+        String url = hostName + "service/diary/1?" + "no=" + no + "&d=" + dayOfYear;
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, listener, errorListener);
+        addToRequestQueue(request);
+    }
+
+    abstract public static class RequestDiaryListener implements Response.Listener<JSONObject> {
+        protected String no;
+        protected int dayOfYear;
+        protected String answer;
+        protected byte[] photo = new byte[]{};
+
+        @Override
+        public void onResponse(JSONObject response) {
+            try {
+                no = response.getString("no");
+                dayOfYear = response.getInt("dayOfYear");
+                answer = response.getString("answer");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            if (!response.isNull("photo")) {
+                try {
+                    String sPhoto = response.getString("photo");
+                    photo = Util.stringToByteArray(sPhoto);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            Log.d(ctx.getString(R.string.tag_server), "RequestDiaryListener 응답 성공!");
             jobToDo();
         }
 
