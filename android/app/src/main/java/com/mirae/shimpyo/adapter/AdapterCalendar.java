@@ -54,8 +54,8 @@ public class AdapterCalendar extends RecyclerView.Adapter<AdapterCalendar.Holder
             if (payloads.get(0) instanceof String) {
                 holder.getTextViewAnswer().setText(String.valueOf((String)payloads.get(0)));
             }
-            if (payloads.get(1) instanceof byte[]) {
-                holder.getImageViewPhoto().setImageBitmap(Util.byteArrayToBitmap((byte[])payloads.get(1)));
+            if (payloads.get(0) instanceof byte[]) {
+                holder.getImageViewPhoto().setImageBitmap(Util.byteArrayToBitmap((byte[])payloads.get(0)));
             }
         } else {
             super.onBindViewHolder(holder,position, payloads);

@@ -3,6 +3,7 @@ package com.mirae.shimpyo.route
 import com.mirae.shimpyo.database.QuerySupport
 import org.json4s.{DefaultFormats, Formats}
 import org.scalatra.json.JacksonJsonSupport
+import org.scalatra.servlet.{FileUploadSupport, MultipartConfig}
 import org.scalatra.{AsyncResult, FutureSupport, ScalatraBase, ScalatraServlet}
 import org.slf4j.LoggerFactory
 import slick.jdbc.JdbcBackend.Database
@@ -15,7 +16,8 @@ import scala.concurrent.{ExecutionContext, Future}
  *  FutureSupport는 비동기 응답을 가능케 한다.
  *
  */
-trait ServiceRoute extends ScalatraBase with JacksonJsonSupport with FutureSupport with QuerySupport{
+trait ServiceRoute extends ScalatraBase with JacksonJsonSupport with FutureSupport with QuerySupport with FileUploadSupport {
+  configureMultipartHandling(MultipartConfig(maxFileSize = Some(3*1024*1024)))
   /** Sets up automatic case class to JSON output serialization, required by the JValueResult trait. */
   protected implicit lazy val jsonFormats: Formats = DefaultFormats
 
@@ -43,6 +45,15 @@ trait ServiceRoute extends ScalatraBase with JacksonJsonSupport with FutureSuppo
       Future {
         contentType = formats("json")
         calendar(db, params.getOrElse("no", halt(400)), params.getOrElse("m", halt(400)).toInt)
+      }
+    }
+  }
+
+  get("/diary/:id") {
+    new AsyncResult { override val is =
+      Future {
+        contentType = formats("json")
+        findDiary(db, params.getOrElse("no", halt(400)), params.getOrElse("d", halt(400)).toInt)
       }
     }
   }

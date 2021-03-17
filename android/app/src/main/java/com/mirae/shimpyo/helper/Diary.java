@@ -47,10 +47,8 @@ public class Diary {
                     public void jobToDo() {
                         setAnswer(this.answer);
                         setPhoto(this.photo);
-                        LinkedList<Object> list = new LinkedList<>();
-                        list.add(this.answer);
-                        list.add(this.photo);
-                        AdapterCalendar.getInstance(null).notifyItemChanged(getPosition(), list);
+                        AdapterCalendar.getInstance(null).notifyItemChanged(getPosition(), this.answer);
+                        AdapterCalendar.getInstance(null).notifyItemChanged(getPosition(), this.photo);
                         setState(LOADED_SOME);
                         Log.d(context.getString(R.string.tag_server), "day : " + day + ", answer : " + answer);
                     }
