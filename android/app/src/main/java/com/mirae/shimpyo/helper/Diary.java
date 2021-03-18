@@ -50,12 +50,16 @@ public class Diary {
                         AdapterCalendar.getInstance(null).notifyItemChanged(getPosition(), this.answer);
                         AdapterCalendar.getInstance(null).notifyItemChanged(getPosition(), this.photo);
                         setState(LOADED_SOME);
-                        Log.d(context.getString(R.string.tag_server), "day : " + day + ", answer : " + answer);
+//                        Log.d(context.getString(R.string.tag_server), "day : " + day + ", answer : " + answer);
                     }
                 }, new ObjectVolley.StandardErrorListener() {
                     @Override
                     public void jobToDo() {
                         setState(LOADED_NONE);
+                    }
+                    @Override
+                    public String tag() {
+                        return "requestDiary";
                     }
                 });
     }

@@ -34,7 +34,7 @@ import java.util.Map;
 
 /**
  * 웹서버와 통신을 담당하는 Volley Manager class
- * Singleton pattern 적
+ * Singleton pattern 적용 
  *
  * @author 송훈일(freean2468@gmail.com)
  */
@@ -149,9 +149,14 @@ public class ObjectVolley {
             if (!response.isNull("photo")) {
                 try {
                     String sPhoto = response.getString("photo");
-                    photo = Util.stringToByteArray(sPhoto);
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                    if (sPhoto.length() > 0) {
+                        Log.d(ctx.getString(R.string.tag_server), "photo string : " + String.valueOf(photo.length));
+                        photo = Util.stringToByteArray(sPhoto);
+                    }
+                } catch (JSONException je) {
+                    je.printStackTrace();
+                } catch (IllegalArgumentException iae) {
+                    iae.printStackTrace();
                 }
             }
 //            Log.d("debug", "no : " + no + ", dayOfYear : " + dayOfYear + ", answer : " + answer + ", photo : " + photo);
@@ -182,9 +187,9 @@ public class ObjectVolley {
                 params.put("no", no);
                 params.put("d", String.valueOf(dayOfYear));
                 params.put("a", answer);
+                Log.d(ctx.getString(R.string.tag_server), "photo byte[] length : " + String.valueOf(photo.length));
                 String sPhoto = Util.byteArrayToString(photo);
-//                Log.d("debug", "photo byte[] length : " + String.valueOf(photo.length));
-//                Log.d("debug", "photo string length : " + String.valueOf(sPhoto.length()));
+                Log.d(ctx.getString(R.string.tag_server), "photo string length : " + String.valueOf(sPhoto.length()));
                 params.put("p", sPhoto);
 
                 return params;
@@ -240,9 +245,14 @@ public class ObjectVolley {
             if (!response.isNull("photo")) {
                 try {
                     String sPhoto = response.getString("photo");
-                    photo = Util.stringToByteArray(sPhoto);
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                    if (sPhoto.length() > 0) {
+                        Log.d(ctx.getString(R.string.tag_server), "photo string : " + String.valueOf(photo.length));
+                        photo = Util.stringToByteArray(sPhoto);
+                    }
+                } catch (JSONException je) {
+                    je.printStackTrace();
+                } catch (IllegalArgumentException iae) {
+                    iae.printStackTrace();
                 }
             }
             Log.d(ctx.getString(R.string.tag_server), "RequestDiaryListener 응답 성공!");
@@ -260,7 +270,7 @@ public class ObjectVolley {
     abstract public static class StandardErrorListener implements Response.ErrorListener {
         @Override
         public void onErrorResponse(VolleyError error) {
-            Log.i(ctx.getString(R.string.tag_server), error.toString() + ", STATUS_CODE : " + volleyResponseStatusCode(error));
+            Log.i(ctx.getString(R.string.tag_server), tag() + " : " + error.toString() + ", STATUS_CODE : " + volleyResponseStatusCode(error));
             jobToDo();
         }
 
@@ -276,6 +286,7 @@ public class ObjectVolley {
         }
 
         public abstract void jobToDo();
+        public abstract String tag();
     }
 
     /**

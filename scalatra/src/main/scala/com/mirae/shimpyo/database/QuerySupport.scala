@@ -107,7 +107,6 @@ trait QuerySupport {
    */
   def login(db: Database, no:String, dayOfYear:Int) = {
     val logger = LoggerFactory.getLogger(getClass)
-    logger.info(s"no : ${no}, dayOfYear : ${dayOfYear}")
     val prom = Promise[ActionResult]()
     findAccount(db, no) onComplete {
       case Failure(e) => {
@@ -130,11 +129,11 @@ trait QuerySupport {
               case Success(r) => {
                 r match {
                   case Some(diary) => {
-                    val logger = LoggerFactory.getLogger(getClass)
-//                    logger.info("byte Array photo length : " + diary.photo.get.length)
+                    logger.info("byte Array photo length : " + diary.photo.get.length)
                     val sPhoto = new String(diary.photo.get, StandardCharsets.UTF_8)
-//                    logger.info("sPhoto length : " + sPhoto.length)
-                    prom.complete(Try(Ok(("no" -> diary.no) ~ ("dayOfYear" -> diary.dayOfYear) ~ ("answer" -> diary.answer.get) ~ ("photo" -> sPhoto))))
+                    logger.info("sPhoto length : " + sPhoto.length)
+                    prom.complete(Try(Ok(("no" -> diary.no) ~ ("dayOfYear" -> diary.dayOfYear) ~
+                      ("answer" -> diary.answer.get) ~ ("photo" -> sPhoto))))
                   }
                   case None => prom.complete(Try(Ok(Diary(no, dayOfYear, Option(""), null))))
                 }

@@ -65,6 +65,11 @@ public class FragmentDialogForSave extends DialogFragment {
                         textViewProgress.setText(getString(R.string.save_failure));
                         textViewProgress.setVisibility(View.VISIBLE);
                     }
+
+                    @Override
+                    public String tag() {
+                        return "RequestAnswer";
+                    }
                 }
         );
 
