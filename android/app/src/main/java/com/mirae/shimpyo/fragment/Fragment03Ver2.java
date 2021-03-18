@@ -48,9 +48,9 @@ public class Fragment03Ver2 extends Fragment {
         Button buttonNextMonth = view.findViewById(R.id.buttonNextMonth);
 
         //달력에서 "<-"버튼 이벤트처리 함수
-        buttonPreviousMonth.setOnClickListener(v -> previousMouthAction(v));
+        buttonPreviousMonth.setOnClickListener(v -> previousMonthAction());
         //달력에서 "->"버튼 이벤트처리 함수
-        buttonNextMonth.setOnClickListener(v -> nextMouthAction(v));
+        buttonNextMonth.setOnClickListener(v -> nextMonthAction());
 
         //초기화하는 함수
         initWidgets();
@@ -171,14 +171,34 @@ public class Fragment03Ver2 extends Fragment {
     }
 
     //달력이 이전 달로 하나씩 넘어가는 기능
-    public void previousMouthAction(View view) {
+    public void previousMonthAction() {
+        limitToThisYear();
         localDateSelect = localDateSelect.minusMonths(1);
         setMonthView(localDateSelect);
     }
 
     //달력이 다음 달로 하나씩 넘어가는 기능
-    public void nextMouthAction(View view) {
+    public void nextMonthAction() {
+        limitToThisYear();
         localDateSelect = localDateSelect.plusMonths(1);
         setMonthView(localDateSelect);
+    }
+
+    private void limitToThisYear() {
+        Button buttonPreviousMonth = view.findViewById(R.id.buttonPreviousMonth);
+        Button buttonNextMonth = view.findViewById(R.id.buttonNextMonth);
+        int nextMonth = localDateSelect.plusMonths(1).getMonthValue();
+        int previousMonth = localDateSelect.minusMonths(1).getMonthValue();
+        final int DEC = 12;
+        final int JAN = 1;
+
+        if (nextMonth == DEC) {
+            buttonNextMonth.setVisibility(View.INVISIBLE);
+        } else if (previousMonth == JAN) {
+            buttonPreviousMonth.setVisibility(View.INVISIBLE);
+        } else {
+            buttonNextMonth.setVisibility(View.VISIBLE);
+            buttonPreviousMonth.setVisibility(View.VISIBLE);
+        }
     }
 }//end of class
