@@ -64,7 +64,6 @@ public class FragmentDialogForLogin extends DialogFragment {
                     }
                 },
                 error -> {
-                    Log.e(getString(R.string.tag_server), "RequestLogin error");
                     progressBar.setVisibility(View.GONE);
                     textViewProgress.setText(getString(R.string.login_failure));
                     textViewProgress.setVisibility(View.VISIBLE);

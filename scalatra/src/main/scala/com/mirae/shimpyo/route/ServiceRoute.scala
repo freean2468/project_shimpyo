@@ -4,7 +4,7 @@ import com.mirae.shimpyo.database.QuerySupport
 import org.json4s.{DefaultFormats, Formats}
 import org.scalatra.json.JacksonJsonSupport
 import org.scalatra.servlet.{FileUploadSupport, MultipartConfig}
-import org.scalatra.{AsyncResult, FutureSupport, ScalatraBase, ScalatraServlet}
+import org.scalatra.{AsyncResult, FutureSupport, Ok, ScalatraBase, ScalatraServlet}
 import org.slf4j.LoggerFactory
 import slick.jdbc.JdbcBackend.Database
 
@@ -50,10 +50,12 @@ trait ServiceRoute extends ScalatraBase with JacksonJsonSupport with FutureSuppo
   }
 
   get("/diary/:id") {
+    val logger = LoggerFactory.getLogger(getClass)
+
     new AsyncResult { override val is =
       Future {
         contentType = formats("json")
-        findDiary(db, params.getOrElse("no", halt(400)), params.getOrElse("d", halt(400)).toInt)
+        retrieveEachDiary(db, params.getOrElse("no", halt(400)), params.getOrElse("d", halt(400)).toInt)
       }
     }
   }

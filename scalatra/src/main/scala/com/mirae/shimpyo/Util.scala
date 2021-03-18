@@ -1,5 +1,8 @@
 package com.mirae.shimpyo
 
+import org.slf4j.LoggerFactory
+
+import java.nio.charset.StandardCharsets
 import java.time.{LocalDate, Year}
 import java.util.{Calendar, Date}
 import java.time.temporal.TemporalAdjusters
@@ -55,4 +58,14 @@ object Util {
     cal.get(Calendar.DAY_OF_YEAR)
   }
 
+  def convertBytesArrayToString(bytesArray : Array[Byte]) = {
+    var s : String = null
+    if (bytesArray.length > 0) {
+      val logger = LoggerFactory.getLogger(getClass)
+      logger.info("byte Array photo length : " + bytesArray)
+      s = new String(bytesArray, StandardCharsets.UTF_8)
+      logger.info("sPhoto length : " + s.length)
+    }
+    s
+  }
 }

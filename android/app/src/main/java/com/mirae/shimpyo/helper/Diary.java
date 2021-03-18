@@ -35,33 +35,39 @@ public class Diary {
         this.answer = answer;
         this.photo = photo;
 
-        Fragment01 fragment01 = Fragment01.getInstance();
-        String no = fragment01.getNo();
+        if (state == Diary.UNKNOWN && day == 18) {
+            Fragment01 fragment01 = Fragment01.getInstance();
+            String no = fragment01.getNo();
 
-        ObjectVolley objectVolley = ObjectVolley.getInstance(context);
-        objectVolley.requestDiary(
-                no,
-                dayOfYear,
-                new ObjectVolley.RequestDiaryListener() {
-                    @Override
-                    public void jobToDo() {
-                        setAnswer(this.answer);
-                        setPhoto(this.photo);
-                        AdapterCalendar.getInstance(null).notifyItemChanged(getPosition(), this.answer);
-                        AdapterCalendar.getInstance(null).notifyItemChanged(getPosition(), this.photo);
-                        setState(LOADED_SOME);
-//                        Log.d(context.getString(R.string.tag_server), "day : " + day + ", answer : " + answer);
-                    }
-                }, new ObjectVolley.StandardErrorListener() {
-                    @Override
-                    public void jobToDo() {
-                        setState(LOADED_NONE);
-                    }
-                    @Override
-                    public String tag() {
-                        return "requestDiary";
-                    }
-                });
+//            Log.d("debug", "no : " + no + ", day : " + day);
+            ObjectVolley.getInstance(context).requestDiary(
+                    no,
+                    dayOfYear,
+                    new ObjectVolley.RequestDiaryListener() {
+                        @Override
+                        public void jobToDo() {
+                            Log.d(context.getString(R.string.tag_server), "day : " + day + ", position : " + getPosition() + ", answer : " + ", photo.length : " + photo.length);
+                            setAnswer(this.answer);
+                            setPhoto(this.photo);
+                            setState(LOADED_SOME);
+                            /**
+                             * 한 번에 하나씩 넘겨도 adapter의 onBindViewHolder에서 List<Object>로 한 번에 받는다.
+                             */
+                            AdapterCalendar.getInstance(null).notifyItemChanged(getPosition(), this.answer);
+                            AdapterCalendar.getInstance(null).notifyItemChanged(getPosition(), this.photo);
+                        }
+                    }, new ObjectVolley.StandardErrorListener() {
+                        @Override
+                        public void jobToDo() {
+                            setState(LOADED_NONE);
+                        }
+
+                        @Override
+                        public String tag() {
+                            return "requestDiary";
+                        }
+                    });
+        }
     }
 
     public int getDay() { return day; }

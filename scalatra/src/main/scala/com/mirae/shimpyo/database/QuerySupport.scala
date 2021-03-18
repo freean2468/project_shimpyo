@@ -4,8 +4,7 @@ import com.mirae.shimpyo.Util
 import com.mirae.shimpyo.database.Tables.{Account, Diary, accounts, diaries}
 import org.json4s.jackson.JsonMethods.{compact, render}
 import org.json4s.JsonDSL._
-
-import org.scalatra.{ActionResult, BadRequest, Ok, halt}
+import org.scalatra.{ActionResult, BadRequest, NotFound, Ok, halt}
 import org.slf4j.LoggerFactory
 import slick.dbio.DBIO
 import slick.jdbc.JdbcBackend.Database
@@ -129,9 +128,8 @@ trait QuerySupport {
               case Success(r) => {
                 r match {
                   case Some(diary) => {
-                    logger.info("byte Array photo length : " + diary.photo.get.length)
-                    val sPhoto = new String(diary.photo.get, StandardCharsets.UTF_8)
-                    logger.info("sPhoto length : " + sPhoto.length)
+//                    logger.info(s"no : ${diary.no}, dayOfYear : ${diary.dayOfYear}, answer : ${diary.answer}, photo : ${diary.photo}")
+                    val sPhoto = Util.convertBytesArrayToString(diary.photo.get)
                     prom.complete(Try(Ok(("no" -> diary.no) ~ ("dayOfYear" -> diary.dayOfYear) ~
                       ("answer" -> diary.answer.get) ~ ("photo" -> sPhoto))))
                   }
@@ -158,6 +156,37 @@ trait QuerySupport {
       case Failure(e) => {
         prom.failure(e)
         e.printStackTrace()
+      }
+    }
+    prom.future
+  }
+
+  /** RequestDiary 요청에서 호출되는 함수
+   * diary를 찾아 특정한 status코드를 입혀 반환해준다.
+   *
+   * @param db
+   * @param no : 회원번호
+   * @param dayOfYear : diary가 저장된 특정일
+   */
+  def retrieveEachDiary(db: Database, no:String, dayOfYear : Int) = {
+    val logger = LoggerFactory.getLogger(getClass)
+    val prom = Promise[ActionResult]()
+    findDiary(db, no, dayOfYear) onComplete {
+      case Failure(e) => {
+        prom.failure(e)
+        e.printStackTrace()
+      }
+      case Success(s) => s match {
+        case None => {
+//          logger.info(s"no : ${no}, dayOfYear : ${dayOfYear} nothing found!")
+          prom.complete(Try(NotFound(null)))
+        }
+        case Some(diary) => {
+//          logger.info(s"no : ${diary.no}, dayOfYear : ${diary.dayOfYear}, answer : ${diary.answer}, photo : ${diary.photo}")
+          val sPhoto = Util.convertBytesArrayToString(diary.photo.get)
+          prom.complete(Try(Ok(("no" -> diary.no) ~ ("dayOfYear" -> diary.dayOfYear) ~
+            ("answer" -> diary.answer.get) ~ ("photo" -> sPhoto))))
+        }
       }
     }
     prom.future

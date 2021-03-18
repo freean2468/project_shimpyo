@@ -46,22 +46,37 @@ public class AdapterCalendar extends RecyclerView.Adapter<AdapterCalendar.Holder
         return new HolderViewCalendar(view);
     }
 
-    // Update only part of ViewHolder that you are interested in
-    // Invoked before onBindViewHolder(ViewHolder holder, int position)
+    /**
+     * Update only part of ViewHolder that you are interested in
+     * Invoked before onBindViewHolder(ViewHolder holder, int position)
+     *
+     * onBindViewHolder(ViewHolder holder, int position) 후에 특정한 요소가 갱신될 때마다
+     * 데이터를 갱신한 후 필요한 view를 갱신하는 부분
+     *
+     * @param holder
+     * @param position
+     * @param payloads NotifyItemChanged 함수를 통해 전달된 인자들
+     */
     @Override
     public void onBindViewHolder(HolderViewCalendar holder, int position, List<Object> payloads) {
         if(!payloads.isEmpty()) {
             if (payloads.get(0) instanceof String) {
                 holder.getTextViewAnswer().setText(String.valueOf((String)payloads.get(0)));
             }
-            if (payloads.get(0) instanceof byte[]) {
-                holder.getImageViewPhoto().setImageBitmap(Util.byteArrayToBitmap((byte[])payloads.get(0)));
+            if (payloads.get(1) instanceof byte[]) {
+                holder.getImageViewPhoto().setImageBitmap(Util.byteArrayToBitmap((byte[])payloads.get(1)));
             }
         } else {
             super.onBindViewHolder(holder,position, payloads);
         }
     }
 
+    /**
+     * 기존 view 디자인에 가장 기초적으로 뿌려져야 할 것들은 여기서 갱신
+     *
+     * @param holder
+     * @param position
+     */
     @Override
     public void onBindViewHolder(@NonNull HolderViewCalendar holder, int position) {
         if (daysOfMonth.get(position).getState() == Diary.NOT_EXISTS) {
@@ -69,11 +84,14 @@ public class AdapterCalendar extends RecyclerView.Adapter<AdapterCalendar.Holder
         } else {
             holder.itemView.setVisibility(View.VISIBLE);
             holder.getTextViewCellDay().setText(String.valueOf(daysOfMonth.get(position).getDay()));
-            holder.getTextViewAnswer().setText(daysOfMonth.get(position).getAnswer());
 
             byte[] photo = daysOfMonth.get(position).getPhoto();
-            if (photo != null && photo.length > 0)
+
+            if (photo != null && photo.length > 0){
+                Log.d("debug", "photo.length : " + photo.length);
+
                 holder.getImageViewPhoto().setImageBitmap(Util.byteArrayToBitmap(photo));
+            }
         }
     }
 
