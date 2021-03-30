@@ -31,6 +31,10 @@ import com.mirae.shimpyo.helper.Util;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 public class Fragment01 extends Fragment {
     private View view;
@@ -69,6 +73,12 @@ public class Fragment01 extends Fragment {
             Util.hideSoftKeyboard(getActivity());
             return false;
         });
+
+        Date c = Calendar.getInstance().getTime();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy년 MM월 dd일", Locale.getDefault());
+        String formattedDate = df.format(c);
+        TextView textViewDayOfYear = view.findViewById(R.id.textViewDayOfYear);
+        textViewDayOfYear.setText(formattedDate);
 
         WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();

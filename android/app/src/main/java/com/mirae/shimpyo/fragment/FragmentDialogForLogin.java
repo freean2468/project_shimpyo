@@ -52,14 +52,15 @@ public class FragmentDialogForLogin extends DialogFragment {
                         progressBar.setVisibility(View.GONE);
                         textViewProgress.setText(getString(R.string.login_ok));
                         textViewProgress.setVisibility(View.VISIBLE);
-                        Fragment01 fragment01 = Fragment01.getInstance();
-                        fragment01.setNo(this.no);
-                        fragment01.setDayOfYear(this.dayOfYear);
-                        fragment01.setAnswer(this.answer);
-                        fragment01.setPhoto(this.photo);
-
                         Intent intent = new Intent(getContext(), ActivityQA.class);
-                        intent.putExtra("no", no);
+
+                        Fragment01 fragment01 = Fragment01.getInstance();
+                        fragment01.setNo(this.getNo());
+                        fragment01.setDayOfYear(this.getDayOfYear());
+                        fragment01.setAnswer(this.getAnswer());
+                        fragment01.setPhoto(this.getPhoto());
+
+                        intent.putExtra("no", this.getNo());
                         startActivity(intent);
                     }
                 },

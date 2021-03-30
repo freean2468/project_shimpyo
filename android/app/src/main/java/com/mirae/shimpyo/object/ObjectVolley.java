@@ -41,7 +41,6 @@ import java.util.Map;
 public class ObjectVolley {
     private static ObjectVolley instance;
     private RequestQueue requestQueue;
-    private ImageLoader imageLoader;
     private static Context ctx;
     private String hostName;
     private final String hostNameForService;
@@ -50,22 +49,6 @@ public class ObjectVolley {
     private ObjectVolley(Context context) {
         ctx = context;
         requestQueue = getRequestQueue();
-
-        imageLoader = new ImageLoader(requestQueue,
-            new ImageLoader.ImageCache() {
-                private final LruCache<String, Bitmap>
-                        cache = new LruCache<String, Bitmap>(20);
-
-                @Override
-                public Bitmap getBitmap(String url) {
-                    return cache.get(url);
-                }
-
-                @Override
-                public void putBitmap(String url, Bitmap bitmap) {
-                    cache.put(url, bitmap);
-                }
-            });
 
         /** 서비스 중인 웹서버 hostname */
         hostNameForService = ctx.getString(R.string.host_name_for_service);
@@ -111,10 +94,6 @@ public class ObjectVolley {
         getRequestQueue().add(req);
     }
 
-    public ImageLoader getImageLoader() {
-        return imageLoader;
-    }
-
     /**
      * 카카오 로그인 후 회원번호로 다시 자체 웹서버에 회원 정보를 요청하는 함수
      * @param no 카카오 회원 번호
@@ -132,10 +111,10 @@ public class ObjectVolley {
      * jobToDo 내용만 구현하고, 필드가 null인지 아닌지만 확인해서 사용하면 된다.
      */
     abstract public static class RequestLoginListener implements Response.Listener<JSONObject> {
-        protected String no;
-        protected int dayOfYear;
-        protected String answer;
-        protected byte[] photo = new byte[]{};
+        private String no;
+        private int dayOfYear;
+        private String answer;
+        private byte[] photo = new byte[]{};
 
         @Override
         public void onResponse(JSONObject response) {
@@ -143,6 +122,7 @@ public class ObjectVolley {
                 no = response.getString("no");
                 dayOfYear = response.getInt("dayOfYear");
                 answer = response.getString("answer");
+                Log.d("debug", "dayOfYear : " + dayOfYear);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -164,6 +144,22 @@ public class ObjectVolley {
         }
 
         public abstract void jobToDo();
+
+        public String getNo() {
+            return no;
+        }
+
+        public int getDayOfYear() {
+            return dayOfYear;
+        }
+
+        public String getAnswer() {
+            return answer;
+        }
+
+        public byte[] getPhoto() {
+            return photo;
+        }
     }
 
     /**
@@ -178,7 +174,7 @@ public class ObjectVolley {
      */
     public void requestAnswer(String no, int dayOfYear, String answer, byte[] photo, RequestAnswerListener listener, Response.ErrorListener errorListener) {
         String url = hostName + ctx.getString(R.string.url_answer);
-        Map<String, String> params = new HashMap<String, String>();
+//        Map<String, String> params = new HashMap<String, String>();
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, listener, errorListener) {
             @Override
             protected Map<String, String> getParams()

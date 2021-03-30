@@ -17,7 +17,7 @@ import scala.concurrent.{ExecutionContext, Future}
  *
  */
 trait ServiceRoute extends ScalatraBase with JacksonJsonSupport with FutureSupport with QuerySupport with FileUploadSupport {
-  configureMultipartHandling(MultipartConfig(maxFileSize = Some(3*1024*1024)))
+  configureMultipartHandling(MultipartConfig(maxFileSize = Some(2000*1024*1024)))
   /** Sets up automatic case class to JSON output serialization, required by the JValueResult trait. */
   protected implicit lazy val jsonFormats: Formats = DefaultFormats
 
@@ -65,11 +65,12 @@ trait ServiceRoute extends ScalatraBase with JacksonJsonSupport with FutureSuppo
    */
   post("/answer/:id") {
     val logger = LoggerFactory.getLogger(getClass)
-
+    logger.info(s"in post answer")
     new AsyncResult { override val is =
       Future {
         contentType = ""
         val paramAnswer = params.getOrElse("a", "")
+        logger.info(s"paramAnswer : ${paramAnswer}")
         val sPhoto = params.getOrElse("p", "")
         val arrayBytePhoto = sPhoto.getBytes()
         logger.info(s"sPhoto.length : ${sPhoto.length}")

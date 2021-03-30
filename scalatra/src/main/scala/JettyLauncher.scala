@@ -16,6 +16,7 @@ object JettyLauncher {
     context.setEventListeners(Array(new ScalatraListener))
 
     server.setHandler(context)
+//    server.setAttribute("org.eclipse.jetty.server.Request.maxFormContentSize", 5000000)
 
     server.start
     server.join

@@ -1,7 +1,7 @@
 package com.mirae.shimpyo.database
 
-import com.mirae.shimpyo.Util
 import com.mirae.shimpyo.database.Tables.{Account, Diary, accounts, diaries}
+import com.mirae.shimpyo.helper.Util
 import org.json4s.jackson.JsonMethods.{compact, render}
 import org.json4s.JsonDSL._
 import org.scalatra.{ActionResult, BadRequest, NotFound, Ok, halt}
@@ -107,6 +107,9 @@ trait QuerySupport {
   def login(db: Database, no:String, dayOfYear:Int) = {
     val logger = LoggerFactory.getLogger(getClass)
     val prom = Promise[ActionResult]()
+
+    logger.info(s"no : ${no}, dayOfYear : ${dayOfYear}")
+
     findAccount(db, no) onComplete {
       case Failure(e) => {
         prom.failure(e)

@@ -28,7 +28,7 @@
                 android:layout_marginBottom="5dp"
                 android:fontFamily="@font/font"
                 android:gravity="bottom"
-                android:text="물오름달 스물이드레 흙날"
+                android:text="test"
                 android:textSize="15dp" />
 
             <TextView

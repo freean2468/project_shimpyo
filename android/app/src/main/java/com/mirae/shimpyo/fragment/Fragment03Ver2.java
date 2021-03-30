@@ -51,7 +51,7 @@ public class Fragment03Ver2 extends Fragment {
         buttonPreviousMonth.setOnClickListener(v -> previousMonthAction());
         //달력에서 "->"버튼 이벤트처리 함수
         buttonNextMonth.setOnClickListener(v -> nextMonthAction());
-
+        
         //초기화하는 함수
         initWidgets();
         //localDate를 지금으로 설정
