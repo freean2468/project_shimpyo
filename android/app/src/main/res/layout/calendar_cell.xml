@@ -12,24 +12,24 @@
 
     <TextView
         android:id="@+id/textViewCellDay"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
         android:textColor="@color/black"
         android:textSize="9dp"
-        android:layout_weight="1"/>
+        android:layout_weight="3"/>
 
     <TextView
         android:id="@+id/textViewAnswer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:textSize="10dp"
-        android:layout_weight="1"/>
+        android:layout_weight="3"/>
 
     <ImageView
         android:id="@+id/imageViewPhoto"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="7"/>
+        android:layout_height="match_parent"
+        android:layout_weight="1"/>
 
 </LinearLayout>

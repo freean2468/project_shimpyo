@@ -122,6 +122,8 @@ public class AdapterCalendar extends RecyclerView.Adapter<AdapterCalendar.Holder
             textViewAnswer.setText("clicked!");
             ImageView imageViewPhoto = view.findViewById(R.id.imageViewPhoto);
             imageViewPhoto.setImageResource(R.mipmap.ic_launcher_round);
+
+
         }
 
         public TextView getTextViewCellDay() {

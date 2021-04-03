@@ -35,7 +35,7 @@ public class Diary {
         this.answer = answer;
         this.photo = photo;
 
-        if (state == Diary.UNKNOWN && day == 18) {
+        if (state == Diary.UNKNOWN) {
             Fragment01 fragment01 = Fragment01.getInstance();
             String no = fragment01.getNo();
 

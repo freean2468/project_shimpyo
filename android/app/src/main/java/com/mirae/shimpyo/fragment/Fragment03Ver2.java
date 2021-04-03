@@ -172,15 +172,15 @@ public class Fragment03Ver2 extends Fragment {
 
     //달력이 이전 달로 하나씩 넘어가는 기능
     public void previousMonthAction() {
-        limitToThisYear();
         localDateSelect = localDateSelect.minusMonths(1);
+        limitToThisYear();
         setMonthView(localDateSelect);
     }
 
     //달력이 다음 달로 하나씩 넘어가는 기능
     public void nextMonthAction() {
-        limitToThisYear();
         localDateSelect = localDateSelect.plusMonths(1);
+        limitToThisYear();
         setMonthView(localDateSelect);
     }
 
@@ -192,13 +192,13 @@ public class Fragment03Ver2 extends Fragment {
         final int DEC = 12;
         final int JAN = 1;
 
-        if (nextMonth == DEC) {
+        buttonNextMonth.setVisibility(View.VISIBLE);
+        buttonPreviousMonth.setVisibility(View.VISIBLE);
+
+        if (nextMonth == JAN) {
             buttonNextMonth.setVisibility(View.INVISIBLE);
-        } else if (previousMonth == JAN) {
+        } else if (previousMonth == DEC) {
             buttonPreviousMonth.setVisibility(View.INVISIBLE);
-        } else {
-            buttonNextMonth.setVisibility(View.VISIBLE);
-            buttonPreviousMonth.setVisibility(View.VISIBLE);
         }
     }
 }//end of class

@@ -55,7 +55,7 @@ public class ObjectVolley {
         /** 개발 중인 local 서버 hostname */
         hostNameForDevelopment = ctx.getString(R.string.host_name_for_development);
 
-        hostName = hostNameForService;
+        hostName = hostNameForDevelopment;
     }
 
     public static synchronized ObjectVolley getInstance(Context context) {
