@@ -1,5 +1,5 @@
 # project_shimpyo
- 안드로이드 앱 개발 프로젝트
+ Android - Scalatra - MySQL로 구현한 다이어리 앱.
 
 ![project_shimpyo_preview](https://i.imgur.com/FWwy6UA.jpg)
 
