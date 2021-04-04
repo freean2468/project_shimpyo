@@ -171,7 +171,6 @@ public class Fragment01 extends Fragment {
     public void setPhoto(byte[] photo) {
         this.photo = photo;
         if (view != null && photo.length > 0) {
-            Log.d("debug", "photo length : " + photo.length);
             ImageView imageViewPhoto = view.findViewById(R.id.imageViewPhoto);
             TextView textViewHint = view.findViewById(R.id.textViewHint);
             textViewHint.setTextColor(getResources().getColor(R.color.transparent));
@@ -181,7 +180,6 @@ public class Fragment01 extends Fragment {
 
     public void setPhoto(Uri selectedImage) {
         if (view != null) {
-            ImageView imageViewPhoto = view.findViewById(R.id.imageViewPhoto);
             TextView textViewHint = view.findViewById(R.id.textViewHint);
             textViewHint.setTextColor(getResources().getColor(R.color.transparent));
         }
