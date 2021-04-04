@@ -1,7 +1,7 @@
 # project_shimpyo
  안드로이드 앱 개발 프로젝트
 
-![project_shimpyo_preview]()
+![project_shimpyo_preview](https://i.imgur.com/FWwy6UA.jpg)
 
 ### 제작 상세
 * 팀장 : 송훈일, 팀원 : 허선영(https://github.com/dodo0211), 김택민(https://github.com/Taekmin-Kim)
@@ -28,3 +28,4 @@
 안드로이드
   
 ### 실행 영상
+https://youtu.be/jU-9tvIG8To
