@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.mirae.shimpyo.R;
 import com.mirae.shimpyo.adapter.AdapterCalendar;
+import com.mirae.shimpyo.helper.Diary;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -25,7 +26,7 @@ import java.util.ArrayList;
 public class Fragment03Ver2 extends Fragment {
     private View view;
     private TextView textViewMonthYear;
-    private RecyclerView rectclerViewCalendar;
+    private RecyclerView recyclerViewCalendar;
     private LocalDate localDateSelect;
 
     private static Fragment03Ver2 instance = null;
@@ -47,57 +48,120 @@ public class Fragment03Ver2 extends Fragment {
         Button buttonNextMonth = view.findViewById(R.id.buttonNextMonth);
 
         //달력에서 "<-"버튼 이벤트처리 함수
-        buttonPreviousMonth.setOnClickListener(v -> previousMouthAction(v));
+        buttonPreviousMonth.setOnClickListener(v -> previousMonthAction());
         //달력에서 "->"버튼 이벤트처리 함수
-        buttonNextMonth.setOnClickListener(v -> nextMouthAction(v));
-
+        buttonNextMonth.setOnClickListener(v -> nextMonthAction());
+        
         //초기화하는 함수
         initWidgets();
         //localDate를 지금으로 설정
         localDateSelect = LocalDate.now();
-        setMonthView();
+        textViewMonthYear.setText(monthYearFromDate(localDateSelect));
+
+        //layoutManager를 grid로 설정, 달력이 7열이며 칸이 일정해야하기 때문에
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(view.getContext(), 7);
+        recyclerViewCalendar.setLayoutManager(layoutManager);
+        recyclerViewCalendar.setAdapter(AdapterCalendar.getInstance(factoryDayInMonthArray(localDateSelect)));
 
         return view;
     }//end of onCreate
 
     //초기화
     private void initWidgets() {
-        rectclerViewCalendar = view.findViewById(R.id.recyclerViewCalendar);
+        recyclerViewCalendar = view.findViewById(R.id.recyclerViewCalendar);
         textViewMonthYear = view.findViewById(R.id.textViewMonthYear);
     }
 
-    private void setMonthView() {
-        textViewMonthYear.setText(monthYearFromDate(localDateSelect));
-        ArrayList<String> daysInMonth = dayInMonthArray(localDateSelect);
+    private void setMonthView(LocalDate date) {
+        textViewMonthYear.setText(monthYearFromDate(date));
 
-        AdapterCalendar adapterCalendar = new AdapterCalendar(daysInMonth);
-
-        //layoutManager를 grid로 설정, 달력이 7열이며 칸이 일정해야하기 때문에
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(view.getContext(), 7);
-        rectclerViewCalendar.setLayoutManager(layoutManager);
-        rectclerViewCalendar.setAdapter(adapterCalendar);
+        /**
+         * 매번 AdapterCalendar를 만들고 셋팅하는 건 adapter 사용 취지에 어긋난다.
+         * Notify를 통해 데이터만 바꾸고 데이터를 바탕으로 뷰를 갱신해야 한다.
+         */
+        changeDayInMonthArray(date);
     }
 
     //한달 안에 각각의 일수를 arrayList로 객체 저장하는 함수
-    private ArrayList<String> dayInMonthArray(LocalDate date) {
-        ArrayList<String> daysInMonthArray = new ArrayList<>();
+    private ArrayList<Diary> factoryDayInMonthArray(LocalDate date) {
+        ArrayList<Diary> daysInMonthArray = new ArrayList<>();
         YearMonth yearMonth = YearMonth.from(date);
 
         int daysInMonth = yearMonth.lengthOfMonth();
 
-        LocalDate firstOfMonth = localDateSelect.withDayOfMonth(1);
+        LocalDate firstOfMonth = date.withDayOfMonth(1);
         int dayOfWeek = firstOfMonth.getDayOfWeek().getValue();
+        int dayOfYear = firstOfMonth.getDayOfYear();
 
+        /**
+         * 여기서 캐싱을 할 수 있겠다.
+         */
         //달력이 최소 4주에서 6주까지 필요하기(1일이 토요일) 때문에 최대가 42일
         for(int i = 1; i <=42 ;i++){
+            int position = i-1;
             if(i <= dayOfWeek || i> daysInMonth + dayOfWeek) {
-                daysInMonthArray.add("");
-            }else{
-                daysInMonthArray.add(String.valueOf(i - dayOfWeek));
+                daysInMonthArray.add(new Diary(
+                        Diary.NOT_EXISTS,
+                        view.getContext(),
+                        (i - dayOfWeek),
+                        position,
+                        dayOfYear,
+                        "",
+                        null));
+            } else {
+                daysInMonthArray.add(new Diary(
+                        Diary.UNKNOWN,
+                        view.getContext(),
+                        (i - dayOfWeek),
+                        position,
+                        dayOfYear,
+                        "",
+                        null));
+                dayOfYear += 1;
             }
 
         }//end of for
         return daysInMonthArray;
+    }
+
+    private void changeDayInMonthArray(LocalDate date) {
+        ArrayList<Diary> daysInMonthArray = AdapterCalendar.getInstance(null).getDaysOfMonth();
+        YearMonth yearMonth = YearMonth.from(date);
+
+        int daysInMonth = yearMonth.lengthOfMonth();
+
+        LocalDate firstOfMonth = date.withDayOfMonth(1);
+        int dayOfWeek = firstOfMonth.getDayOfWeek().getValue();
+        int dayOfYear = firstOfMonth.getDayOfYear();
+
+        /**
+         * 여기서 캐싱을 할 수 있겠다.
+         */
+        //달력이 최소 4주에서 6주까지 필요하기(1일이 토요일) 때문에 최대가 42일
+        for(int i = 1; i <=42 ;i++){
+            int position = i-1;
+            if(i <= dayOfWeek || i> daysInMonth + dayOfWeek) {
+                daysInMonthArray.get(position).update(
+                                Diary.NOT_EXISTS,
+                                view.getContext(),
+                                (i - dayOfWeek),
+                                position,
+                                dayOfYear,
+                                "",
+                                null);
+            } else {
+                daysInMonthArray.get(position).update(
+                                Diary.UNKNOWN,
+                                view.getContext(),
+                                (i - dayOfWeek),
+                                position,
+                                dayOfYear,
+                                "",
+                                null);
+                dayOfYear += 1;
+            }
+            AdapterCalendar.getInstance(null).notifyItemChanged(position);
+        }//end of for
     }
 
     //로컬(대한민국으로 설정)시간으로 설정
@@ -107,14 +171,36 @@ public class Fragment03Ver2 extends Fragment {
     }
 
     //달력이 이전 달로 하나씩 넘어가는 기능
-    public void previousMouthAction(View view) {
+    public void previousMonthAction() {
         localDateSelect = localDateSelect.minusMonths(1);
-        setMonthView();
+        limitToThisYear();
+        setMonthView(localDateSelect);
     }
 
     //달력이 다음 달로 하나씩 넘어가는 기능
-    public void nextMouthAction(View view) {
+    public void nextMonthAction() {
         localDateSelect = localDateSelect.plusMonths(1);
-        setMonthView();
+        limitToThisYear();
+        setMonthView(localDateSelect);
     }
+
+    private void limitToThisYear() {
+        Button buttonPreviousMonth = view.findViewById(R.id.buttonPreviousMonth);
+        Button buttonNextMonth = view.findViewById(R.id.buttonNextMonth);
+        int nextMonth = localDateSelect.plusMonths(1).getMonthValue();
+        int previousMonth = localDateSelect.minusMonths(1).getMonthValue();
+        final int DEC = 12;
+        final int JAN = 1;
+
+        buttonNextMonth.setVisibility(View.VISIBLE);
+        buttonPreviousMonth.setVisibility(View.VISIBLE);
+
+        if (nextMonth == JAN) {
+            buttonNextMonth.setVisibility(View.INVISIBLE);
+        } else if (previousMonth == DEC) {
+            buttonPreviousMonth.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    public LocalDate getLocalDateSelect() { return localDateSelect; }
 }//end of class

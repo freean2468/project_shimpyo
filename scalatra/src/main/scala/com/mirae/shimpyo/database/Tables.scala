@@ -83,13 +83,13 @@ object Tables {
     def account =
       foreignKey("fk_no", no, accounts)(_.no,
         onUpdate = ForeignKeyAction.Cascade,
-        onDelete=ForeignKeyAction.Cascade)
+        onDelete = ForeignKeyAction.Cascade)
 
     /** foreign key */
     def question =
       foreignKey("fk_dayOfYear", dayOfYear, questions)(_.dayOfYear,
         onUpdate = ForeignKeyAction.Cascade,
-        onDelete=ForeignKeyAction.Restrict)
+        onDelete = ForeignKeyAction.Restrict)
 
     def * =
       (no, dayOfYear, answer.?, photo.?) <> (Diary.tupled, Diary.unapply)

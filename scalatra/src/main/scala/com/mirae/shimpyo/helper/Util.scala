@@ -1,8 +1,11 @@
-package com.mirae.shimpyo
+package com.mirae.shimpyo.helper
 
+import org.slf4j.LoggerFactory
+
+import java.nio.charset.StandardCharsets
+import java.time.temporal.TemporalAdjusters
 import java.time.{LocalDate, Year}
 import java.util.{Calendar, Date}
-import java.time.temporal.TemporalAdjusters
 
 /** 각종 기능의 함수들을 모아놓은 object
  *
@@ -13,7 +16,7 @@ object Util {
    * @param month 특정 달(1~12)
    * @return List.head == 각 달의 첫 일의 dayOfYear, last == 각 달의 마지막 일의 dayOfYear
    */
-  def getDaysWithMonth(month:Int) = {
+  def getDaysWithMonth(month: Int) = {
     val firstAdjuster = TemporalAdjusters.firstDayOfMonth
     val lastAdjuster = TemporalAdjusters.lastDayOfMonth
 
@@ -55,4 +58,14 @@ object Util {
     cal.get(Calendar.DAY_OF_YEAR)
   }
 
+  def convertBytesArrayToString(bytesArray: Array[Byte]) = {
+    var s: String = null
+    if (bytesArray.length > 0) {
+      val logger = LoggerFactory.getLogger(getClass)
+      logger.info("byte Array photo length : " + bytesArray)
+      s = new String(bytesArray, StandardCharsets.UTF_8)
+      logger.info("sPhoto length : " + s.length)
+    }
+    s
+  }
 }

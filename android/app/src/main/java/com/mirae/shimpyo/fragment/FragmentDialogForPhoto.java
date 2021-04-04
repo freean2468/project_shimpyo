@@ -3,8 +3,11 @@ package com.mirae.shimpyo.fragment;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -15,6 +18,10 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 import com.mirae.shimpyo.R;
+import com.mirae.shimpyo.helper.Util;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 public class FragmentDialogForPhoto extends DialogFragment {
     private final int GET_GALLERY_IMAGE = 200;
@@ -88,7 +95,26 @@ public class FragmentDialogForPhoto extends DialogFragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if(requestCode==GET_GALLERY_IMAGE && resultCode == Activity.RESULT_OK && data!=null && data.getData()!=null)
         {
-            Fragment01.getInstance().setPhoto(data.getData());
+            Uri imageUri = data.getData();
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
+                Bitmap compressed = Util.compressBitmap(bitmap);;
+                while (true) {
+                    int compressedSize = Util.sizeOf(compressed);
+                    if (compressedSize < 200000) {
+                        Log.d("debug", "compressed size : " + compressedSize);
+                        break;
+                    }
+
+                    bitmap = compressed;
+                    compressed = Util.compressBitmap(Util.getResizedBitmap(bitmap, (int)(bitmap.getWidth() * 0.92)));
+//                    compressed = Util.compressBitmap(bitmap);
+                }
+                Fragment01.getInstance().setPhoto(Util.getByteArray(compressed));
+                bitmap.recycle();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         FragmentDialogForPhoto.this.getDialog().cancel();

@@ -4,8 +4,10 @@
     <string name="host_name_for_service">http://shimpyov3-env.eba-eefivrrp.ap-northeast-2.elasticbeanstalk.com/</string>
     <string name="host_name_for_development">http://10.0.2.2:8080/</string>
     <string name="url_login">service/login/1?</string>
+    <string name="url_diary">service/diary/1?</string>
     <string name="url_selectAll">db/selectAll</string>
     <string name="url_answer">service/answer/1?</string>
+    <string name="url_question">service/question/1?</string>
 
     <string name="kakao_app_key">7296adf98bdaa2d1a1f8e38c38b448db</string>
 
@@ -17,4 +19,10 @@
 
     <string name="margin_view">20dp</string>
     <string name="margin_background">10dp</string>
+
+    <string name="save_ok">일기가 저장되었따!</string>
+    <string name="save_failure">일기 저장 오류가 발생해 부럿따...</string>
+
+    <string name="login_ok">접속에 성공했따!</string>
+    <string name="login_failure">접속에 오류가 발생해 부럿따...</string>
 </resources>

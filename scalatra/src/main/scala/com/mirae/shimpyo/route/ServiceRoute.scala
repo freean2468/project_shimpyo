@@ -3,7 +3,8 @@ package com.mirae.shimpyo.route
 import com.mirae.shimpyo.database.QuerySupport
 import org.json4s.{DefaultFormats, Formats}
 import org.scalatra.json.JacksonJsonSupport
-import org.scalatra.{AsyncResult, FutureSupport, ScalatraBase, ScalatraServlet}
+import org.scalatra.servlet.{FileUploadSupport, MultipartConfig}
+import org.scalatra.{AsyncResult, FutureSupport, Ok, ScalatraBase, ScalatraServlet}
 import org.slf4j.LoggerFactory
 import slick.jdbc.JdbcBackend.Database
 
@@ -15,7 +16,8 @@ import scala.concurrent.{ExecutionContext, Future}
  *  FutureSupport는 비동기 응답을 가능케 한다.
  *
  */
-trait ServiceRoute extends ScalatraBase with JacksonJsonSupport with FutureSupport with QuerySupport{
+trait ServiceRoute extends ScalatraBase with JacksonJsonSupport with FutureSupport with QuerySupport with FileUploadSupport {
+  configureMultipartHandling(MultipartConfig(maxFileSize = Some(2000*1024*1024)))
   /** Sets up automatic case class to JSON output serialization, required by the JValueResult trait. */
   protected implicit lazy val jsonFormats: Formats = DefaultFormats
 
@@ -47,16 +49,39 @@ trait ServiceRoute extends ScalatraBase with JacksonJsonSupport with FutureSuppo
     }
   }
 
+  get("/diary/:id") {
+    val logger = LoggerFactory.getLogger(getClass)
+
+    new AsyncResult { override val is =
+      Future {
+        contentType = formats("json")
+        retrieveEachDiary(db, params.getOrElse("no", halt(400)), params.getOrElse("d", halt(400)).toInt)
+      }
+    }
+  }
+
+  get("/question/:id") {
+    val logger = LoggerFactory.getLogger(getClass)
+
+    new AsyncResult { override val is =
+      Future {
+        contentType = formats("json")
+        retrieveQuestion(db, params.getOrElse("d", halt(400)).toInt)
+      }
+    }
+  }
+
   /**
    *  post
    */
   post("/answer/:id") {
     val logger = LoggerFactory.getLogger(getClass)
-
+    logger.info(s"in post answer")
     new AsyncResult { override val is =
       Future {
         contentType = ""
         val paramAnswer = params.getOrElse("a", "")
+        logger.info(s"paramAnswer : ${paramAnswer}")
         val sPhoto = params.getOrElse("p", "")
         val arrayBytePhoto = sPhoto.getBytes()
         logger.info(s"sPhoto.length : ${sPhoto.length}")

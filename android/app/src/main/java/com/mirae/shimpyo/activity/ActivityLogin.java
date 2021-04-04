@@ -3,6 +3,7 @@ package com.mirae.shimpyo.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Window;
 import android.widget.Switch;
 import android.widget.TextView;
 

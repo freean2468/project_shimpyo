@@ -1,11 +1,10 @@
 package com.mirae.shimpyo.database
 
-import com.mirae.shimpyo.Util
-import com.mirae.shimpyo.database.Tables.{Account, Diary, accounts, diaries}
+import com.mirae.shimpyo.database.Tables.{Account, Diary, accounts, diaries, questions}
+import com.mirae.shimpyo.helper.Util
 import org.json4s.jackson.JsonMethods.{compact, render}
 import org.json4s.JsonDSL._
-
-import org.scalatra.{ActionResult, BadRequest, Ok, halt}
+import org.scalatra.{ActionResult, BadRequest, NotFound, Ok, halt}
 import org.slf4j.LoggerFactory
 import slick.dbio.DBIO
 import slick.jdbc.JdbcBackend.Database
@@ -43,7 +42,7 @@ trait QuerySupport {
   }
 
   def answer(db: Database, no: String, dayOfYear: Int, answer: String, photo: Array[Byte]) = {
-    val prom = Promise[Int]()
+    val prom = Promise[ActionResult]()
     val logger = LoggerFactory.getLogger(getClass)
     logger.info("answer in QuerySupport")
     findDiary(db, no, dayOfYear) onComplete {
@@ -58,7 +57,7 @@ trait QuerySupport {
           case Some(_) => updateDiary(db, Diary(no, dayOfYear, Option(answer), Option(photo))) onComplete {
             case Success(res2) => {
               logger.info(s"answer in update success. res2 : ${res2}")
-              prom.complete(Try(res2))
+              prom.complete(Try(Ok(res2)))
             }
             case Failure(e) => {
               prom.failure(e)
@@ -68,7 +67,7 @@ trait QuerySupport {
           case None => insert(db, Diary(no, dayOfYear, Option(answer), Option(photo))) onComplete {
             case Success(res2) => {
               logger.info(s"answer in insert success. res2 : ${res2}")
-              prom.complete(Try(res2))
+              prom.complete(Try(Ok(res2)))
             }
             case Failure(e) => {
               prom.failure(e)
@@ -98,6 +97,9 @@ trait QuerySupport {
     db.run(diaries.filter(d =>
       d.no === no && (d.dayOfYear >= firstDay && d.dayOfYear <= lastDay)).result)
 
+  def findQuestion(db: Database, dayOfYear: Int) =
+    db.run(questions.filter(_.dayOfYear === dayOfYear).result.headOption)
+
   /**
    * 유저가 로그인 시 호출하는 함수. 회원 번호를 받아 account_table에 계정이 없으면 새로 생성한다.
    * 기존 유저이면서 dayOfYear에 작성한 diary record가 있다면 해당 값들을 반환해주고 없다면 null로 셋팅해 반환.
@@ -107,41 +109,46 @@ trait QuerySupport {
    */
   def login(db: Database, no:String, dayOfYear:Int) = {
     val logger = LoggerFactory.getLogger(getClass)
-    logger.info(s"no : ${no}, dayOfYear : ${dayOfYear}")
     val prom = Promise[ActionResult]()
+
+    logger.info(s"no : ${no}, dayOfYear : ${dayOfYear}")
+
     findAccount(db, no) onComplete {
-      case Failure(e) => {
-        prom.failure(e)
-        e.printStackTrace()
-      }
+      case Failure(e) => prom.failure(e)
       case Success(count) => {
-        count match {
-          case None => {
-            insert(db, Account(no, null)) onComplete {
-              case Failure(e) => {
-                prom.failure(e)
-                e.printStackTrace()
-              }
-              case Success(count) => prom.complete(Try(Ok(Diary(no, dayOfYear, Option(""), null))))
-            }
-          }
-          case Some(x) => {
-            findDiary(db, no, dayOfYear) onComplete {
-              case Success(r) => {
-                r match {
-                  case Some(diary) => {
-                    val logger = LoggerFactory.getLogger(getClass)
-//                    logger.info("byte Array photo length : " + diary.photo.get.length)
-                    val sPhoto = new String(diary.photo.get, StandardCharsets.UTF_8)
-//                    logger.info("sPhoto length : " + sPhoto.length)
-                    prom.complete(Try(Ok(("no" -> diary.no) ~ ("dayOfYear" -> diary.dayOfYear) ~ ("answer" -> diary.answer.get) ~ ("photo" -> sPhoto))))
+        findQuestion(db, dayOfYear) onComplete {
+          case Failure(e) => prom.failure(e)
+          case Success(oq) => {
+            oq match {
+              case None => prom.complete(Try(BadRequest()))
+              case Some(q) => {
+                count match {
+                  case None => {
+                    insert(db, Account(no, null)) onComplete {
+                      case Failure(e) => prom.failure(e)
+                      case Success(count) => prom.complete(Try(Ok(("no" -> no) ~ ("dayOfYear" -> dayOfYear) ~
+                        ("question" -> q.question) ~ ("answer" -> "") ~ ("photo" -> null))))
+                    }
                   }
-                  case None => prom.complete(Try(Ok(Diary(no, dayOfYear, Option(""), null))))
+                  case Some(x) => {
+                    findDiary(db, no, dayOfYear) onComplete {
+                      case Failure(e) => prom.failure(e)
+                      case Success(r) => {
+                        r match {
+                          case Some(diary) => {
+                            //                    logger.info(s"no : ${diary.no}, dayOfYear : ${diary.dayOfYear}, answer : ${diary.answer}, photo : ${diary.photo}")
+                            val sPhoto = Util.convertBytesArrayToString(diary.photo.get)
+                            prom.complete(Try(Ok(("no" -> diary.no) ~ ("dayOfYear" -> diary.dayOfYear) ~
+                              ("question" -> q.question) ~
+                              ("answer" -> diary.answer.get) ~ ("photo" -> sPhoto))))
+                          }
+                          case None => prom.complete(Try(Ok(("no" -> no) ~ ("dayOfYear" -> dayOfYear) ~
+                            ("question" -> q.question) ~ ("answer" -> "") ~ ("photo" -> null))))
+                        }
+                      }
+                    }
+                  }
                 }
-              }
-              case Failure(e) => {
-                prom.failure(e)
-                e.printStackTrace()
               }
             }
           }
@@ -159,6 +166,59 @@ trait QuerySupport {
       case Failure(e) => {
         prom.failure(e)
         e.printStackTrace()
+      }
+    }
+    prom.future
+  }
+
+  /** RequestDiary 요청에서 호출되는 함수
+   * diary를 찾아 특정한 status코드를 입혀 반환해준다.
+   *
+   * @param db
+   * @param no : 회원번호
+   * @param dayOfYear : diary가 저장된 특정일
+   */
+  def retrieveEachDiary(db: Database, no:String, dayOfYear : Int) = {
+    val logger = LoggerFactory.getLogger(getClass)
+    val prom = Promise[ActionResult]()
+    findDiary(db, no, dayOfYear) onComplete {
+      case Failure(e) => {
+        prom.failure(e)
+        e.printStackTrace()
+      }
+      case Success(s) => s match {
+        case None => {
+//          logger.info(s"no : ${no}, dayOfYear : ${dayOfYear} nothing found!")
+          prom.complete(Try(NotFound(null)))
+        }
+        case Some(diary) => {
+//          logger.info(s"no : ${diary.no}, dayOfYear : ${diary.dayOfYear}, answer : ${diary.answer}, photo : ${diary.photo}")
+          val sPhoto = Util.convertBytesArrayToString(diary.photo.get)
+          prom.complete(Try(Ok(("no" -> diary.no) ~ ("dayOfYear" -> diary.dayOfYear) ~
+            ("answer" -> diary.answer.get) ~ ("photo" -> sPhoto))))
+        }
+      }
+    }
+    prom.future
+  }
+
+  def retrieveQuestion(db: Database, dayOfYear : Int) = {
+    val logger = LoggerFactory.getLogger(getClass)
+    val prom = Promise[ActionResult]()
+    findQuestion(db, dayOfYear) onComplete {
+      case Failure(e) => {
+        prom.failure(e)
+        e.printStackTrace()
+      }
+      case Success(s) => s match {
+        case None => {
+          //          logger.info(s"no : ${no}, dayOfYear : ${dayOfYear} nothing found!")
+          prom.complete(Try(NotFound(null)))
+        }
+        case Some(question) => {
+          //          logger.info(s"no : ${diary.no}, dayOfYear : ${diary.dayOfYear}, answer : ${diary.answer}, photo : ${diary.photo}")
+          prom.complete(Try(Ok(question)))
+        }
       }
     }
     prom.future
