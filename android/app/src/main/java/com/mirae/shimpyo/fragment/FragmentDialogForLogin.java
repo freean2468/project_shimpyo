@@ -59,6 +59,7 @@ public class FragmentDialogForLogin extends DialogFragment {
                         fragment01.setDayOfYear(this.getDayOfYear());
                         fragment01.setAnswer(this.getAnswer());
                         fragment01.setPhoto(this.getPhoto());
+                        fragment01.setQuestion(this.getQuestion());
 
                         intent.putExtra("no", this.getNo());
                         startActivity(intent);

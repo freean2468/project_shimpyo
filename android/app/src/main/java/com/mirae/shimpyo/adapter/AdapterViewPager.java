@@ -15,9 +15,9 @@ public class AdapterViewPager extends FragmentPagerAdapter {
         super(fm);
     }
 
-    private final static int FRAGMENT_01 = 0;
-    private final static int FRAGMENT_03 = 1;
-    private final static int FRAGMENT_COUNT = 2;
+    public final static int FRAGMENT_01 = 0;
+    public final static int FRAGMENT_03 = 1;
+    public final static int FRAGMENT_COUNT = 2;
 
     @NonNull
     @Override

@@ -113,6 +113,7 @@ public class ObjectVolley {
     abstract public static class RequestLoginListener implements Response.Listener<JSONObject> {
         private String no;
         private int dayOfYear;
+        private String question;
         private String answer;
         private byte[] photo = new byte[]{};
 
@@ -121,6 +122,7 @@ public class ObjectVolley {
             try {
                 no = response.getString("no");
                 dayOfYear = response.getInt("dayOfYear");
+                question = response.getString("question");
                 answer = response.getString("answer");
                 Log.d("debug", "dayOfYear : " + dayOfYear);
             } catch (JSONException e) {
@@ -160,6 +162,8 @@ public class ObjectVolley {
         public byte[] getPhoto() {
             return photo;
         }
+
+        public String getQuestion() { return question; }
     }
 
     /**
@@ -192,7 +196,6 @@ public class ObjectVolley {
             }
         };
         addToRequestQueue(stringRequest);
-
     }
 
     /**
@@ -207,6 +210,29 @@ public class ObjectVolley {
         }
 
         public abstract void jobToDo();
+    }
+
+    public void requestQuestion(int dayOfYear, RequestQuestionListener listener, StandardErrorListener errorListener) {
+        String url = hostName + ctx.getString(R.string.url_question) + "d=" + dayOfYear;
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, listener, errorListener);
+        addToRequestQueue(request);
+    }
+
+    abstract public static class RequestQuestionListener implements Response.Listener<JSONObject> {
+        private String question;
+
+        @Override
+        public void onResponse(JSONObject response) {
+            try {
+                question = response.getString("question");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            jobToDo();
+        }
+
+        public abstract void jobToDo();
+        public String getQuestion() { return question; }
     }
 
     /**

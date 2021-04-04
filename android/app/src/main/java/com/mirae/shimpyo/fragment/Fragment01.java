@@ -40,6 +40,7 @@ public class Fragment01 extends Fragment {
     private View view;
     private String no;
     private int dayOfYear;
+    private String question;
     private String answer;
     private byte[] photo;
 
@@ -65,6 +66,8 @@ public class Fragment01 extends Fragment {
 
         EditText editTextAnswer = view.findViewById(R.id.editTextAnswer);
         editTextAnswer.setText(this.answer);
+        TextView textViewQuestion = view.findViewById(R.id.textViewQuestion);
+        textViewQuestion.setText(this.question);
         Button buttonAnswer = view.findViewById(R.id.buttonAnswer);
         imageViewPhoto = view.findViewById(R.id.imageViewPhoto);
 
@@ -131,26 +134,38 @@ public class Fragment01 extends Fragment {
     }
     public byte[] getPhoto() { return photo; }
     public String getAnswer() { return answer; }
+    public String getQuestion() { return question; }
     public int getDayOfYear() { return dayOfYear; }
+
+    public void setQuestion(String question) {
+        this.question = question;
+        if (view != null) {
+            TextView textViewQuestion = view.findViewById(R.id.textViewQuestion);
+            textViewQuestion.setText(question);
+        }
+    }
 
     public void setNo(String no) {
         this.no = no;
-        if (view != null) {
-            TextView textViewQuestion = view.findViewById(R.id.textViewQuestion);
-            textViewQuestion.setText(this.no + "님 " + textViewQuestion.getText());
-        }
     }
 
     public void setDayOfYear(int dayOfYear) {
         this.dayOfYear = dayOfYear;
         if (view != null) {
             TextView textViewDayOfYear = view.findViewById(R.id.textViewDayOfYear);
-            textViewDayOfYear.setText(textViewDayOfYear.getText().toString() + "(" + String.valueOf(this.dayOfYear) + ")");
+            textViewDayOfYear.setText(Util.convertDayOfYearToyyyyMMdd(dayOfYear));
         }
     }
 
     public void setAnswer(String answer) {
         this.answer = answer;
+    }
+
+    public void setAnswerView() {
+        if (view != null) {
+            EditText editTextAnswer = view.findViewById(R.id.editTextAnswer);
+            editTextAnswer.setText(this.answer);
+        }
     }
 
     public void setPhoto(byte[] photo) {

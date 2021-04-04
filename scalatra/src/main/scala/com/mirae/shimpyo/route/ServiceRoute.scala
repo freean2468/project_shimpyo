@@ -60,6 +60,17 @@ trait ServiceRoute extends ScalatraBase with JacksonJsonSupport with FutureSuppo
     }
   }
 
+  get("/question/:id") {
+    val logger = LoggerFactory.getLogger(getClass)
+
+    new AsyncResult { override val is =
+      Future {
+        contentType = formats("json")
+        retrieveQuestion(db, params.getOrElse("d", halt(400)).toInt)
+      }
+    }
+  }
+
   /**
    *  post
    */

@@ -201,4 +201,6 @@ public class Fragment03Ver2 extends Fragment {
             buttonPreviousMonth.setVisibility(View.INVISIBLE);
         }
     }
+
+    public LocalDate getLocalDateSelect() { return localDateSelect; }
 }//end of class

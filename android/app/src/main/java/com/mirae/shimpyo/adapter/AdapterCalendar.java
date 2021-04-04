@@ -1,6 +1,9 @@
 package com.mirae.shimpyo.adapter;
 
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,12 +13,23 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.mirae.shimpyo.R;
+import com.mirae.shimpyo.activity.ActivityQA;
+import com.mirae.shimpyo.fragment.Fragment01;
+import com.mirae.shimpyo.fragment.Fragment03Ver2;
 import com.mirae.shimpyo.helper.Diary;
 import com.mirae.shimpyo.helper.Util;
+import com.mirae.shimpyo.object.ObjectVolley;
 
+import org.w3c.dom.Text;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class AdapterCalendar extends RecyclerView.Adapter<AdapterCalendar.HolderViewCalendar> {
@@ -116,14 +130,56 @@ public class AdapterCalendar extends RecyclerView.Adapter<AdapterCalendar.Holder
 
         @Override
         public void onClick(View view) {
-            Log.d("debug", "clicked : " + getAdapterPosition());
-            view.setBackgroundColor(Color.CYAN);
-            TextView textViewAnswer = view.findViewById(R.id.textViewAnswer);
-            textViewAnswer.setText("clicked!");
-            ImageView imageViewPhoto = view.findViewById(R.id.imageViewPhoto);
-            imageViewPhoto.setImageResource(R.mipmap.ic_launcher_round);
+            Fragment03Ver2 fragment03Ver2 = Fragment03Ver2.getInstance();
+            LocalDate selectedDate = fragment03Ver2.getLocalDateSelect();
 
+            int month = selectedDate.getMonthValue();
+            int day = Integer.parseInt(getTextViewCellDay().getText().toString());
+            Calendar c = Calendar.getInstance();
+            c.set(LocalDate.now().getYear(), month - 1, day, 0, 0);
+            int dayOfYear = c.get(Calendar.DAY_OF_YEAR);
+            Fragment01 fragment01 = Fragment01.getInstance();
+            BitmapDrawable bitmapDrawable = ((BitmapDrawable) getImageViewPhoto().getDrawable());
 
+            ObjectVolley objectVolley = ObjectVolley.getInstance(view.getContext());
+            objectVolley.requestQuestion(
+                    dayOfYear,
+                    new ObjectVolley.RequestQuestionListener() {
+                        @Override
+                        public void jobToDo() {
+                            if (bitmapDrawable == null) {
+                                fragment01.setPhoto();
+                            } else {
+                                Bitmap bitmap = bitmapDrawable.getBitmap();
+                                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                                byte[] imageInByte = baos.toByteArray();
+                                fragment01.setPhoto(imageInByte);
+                                try {
+                                    baos.close();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            fragment01.setDayOfYear(dayOfYear);
+                            fragment01.setQuestion(getQuestion());
+                            fragment01.setAnswer(getTextViewAnswer().getText().toString());
+                            fragment01.setAnswerView();
+                            ActivityQA.viewPager.setCurrentItem(AdapterViewPager.FRAGMENT_01);
+                        }
+                    },
+                    new ObjectVolley.StandardErrorListener() {
+                        @Override
+                        public void jobToDo() {
+
+                        }
+
+                        @Override
+                        public String tag() {
+                            return null;
+                        }
+                    }
+            );
         }
 
         public TextView getTextViewCellDay() {

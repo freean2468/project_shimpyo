@@ -17,6 +17,7 @@ import com.mirae.shimpyo.R;
  *
  */
 public class ActivityQA extends ActivityNoSystemBar {
+    public static ViewPager viewPager;
     private AdapterViewPager fragmentPagerAdapter;
     private String no;
 
@@ -25,7 +26,7 @@ public class ActivityQA extends ActivityNoSystemBar {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qa);
 
-        ViewPager viewPager = findViewById(R.id.ViewPager);
+        viewPager = findViewById(R.id.ViewPager);
         fragmentPagerAdapter = new AdapterViewPager(getSupportFragmentManager());
         viewPager.setAdapter(fragmentPagerAdapter);
 

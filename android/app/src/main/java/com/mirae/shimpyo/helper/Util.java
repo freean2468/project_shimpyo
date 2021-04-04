@@ -9,7 +9,13 @@ import android.view.inputmethod.InputMethodManager;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Year;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 public class Util {
     public static int getDayOfYear() { return Calendar.getInstance().get(Calendar.DAY_OF_YEAR); }
@@ -39,5 +45,12 @@ public class Util {
         if (activity.getCurrentFocus() != null)
             inputMethodManager.hideSoftInputFromWindow(
                 activity.getCurrentFocus().getWindowToken(), 0);
+    }
+
+    public static String convertDayOfYearToyyyyMMdd(int dayOfYear) {
+        LocalDate currentDate = LocalDate.now();
+        int y = currentDate.getYear();
+        DateTimeFormatter formatters = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일");
+        return Year.of(y).atDay(dayOfYear).format(formatters);
     }
 }
