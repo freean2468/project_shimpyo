@@ -20,7 +20,7 @@ update `shimpyo`.`question_table` set `question` = "평생 이루고 싶은 목�
 update `shimpyo`.`question_table` set `question` = "가장 좋아하는 구절은?" where `dayofyear` = 83;
 update `shimpyo`.`question_table` set `question` = "평생 남을 거 같은 기억은?" where `dayofyear` = 84;
 update `shimpyo`.`question_table` set `question` = "평생 남을 거 같은 말 한마디" where `dayofyear` = 85;
-update `shimpyo`.`question_table` set `question` = "" where `dayofyear` = 86;
+update `shimpyo`.`question_table` set `question` = "내 인생영화 Top3" where `dayofyear` = 86;
 update `shimpyo`.`question_table` set `question` = "나는 어떤 존재가 되고 싶은가?" where `dayofyear` = 87;
 update `shimpyo`.`question_table` set `question` = "요즘 하고 있는 고민은?" where `dayofyear` = 88;
 update `shimpyo`.`question_table` set `question` = "소비 패턴 중 가장 많은 비중을 차지하는 것은?" where `dayofyear` = 89;
